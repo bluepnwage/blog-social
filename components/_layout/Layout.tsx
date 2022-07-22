@@ -28,7 +28,7 @@ export default function Layout({ children }: PropTypes) {
             headings: { fontFamily: "Segoe UI, sans-serif" }
           }}
         >
-          <Header onToggle={toggleTheme} />
+          <Header />
           <Paper
             sx={(theme) => ({
               backgroundColor: checkTheme(theme, theme.colors.gray[0], ""),

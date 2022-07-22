@@ -1,33 +1,8 @@
-import React from "react";
-import { createStyles, Container, Group, ActionIcon, Image, Text } from "@mantine/core";
+import { Container, Group, ActionIcon, Image, Text } from "@mantine/core";
 import { BrandTwitter, BrandYoutube, BrandGithub } from "tabler-icons-react";
+import { useStyles } from "./styles";
 
-const useStyles = createStyles((theme) => ({
-  footer: {
-    borderTop: `1px solid ${theme.colorScheme === "dark" ? theme.colors.dark[5] : theme.colors.gray[2]}`,
-    transition: "all 250ms ease-out"
-  },
-
-  inner: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingTop: theme.spacing.xl,
-    paddingBottom: theme.spacing.xl,
-
-    [theme.fn.smallerThan("xs")]: {
-      flexDirection: "column"
-    }
-  },
-
-  links: {
-    [theme.fn.smallerThan("xs")]: {
-      marginTop: theme.spacing.md
-    }
-  }
-}));
-
-export default function FooterSocial() {
+export default function Footer() {
   const { classes } = useStyles();
 
   return (
