@@ -1,8 +1,9 @@
-import { ReactNode } from "react";
-import { MantineProvider, ColorSchemeProvider, Paper, ColorScheme } from "@mantine/core";
-import { useState } from "react";
-import { checkTheme } from "util/theme";
 import Header from "./Header";
+import { MantineProvider, ColorSchemeProvider, Paper, ColorScheme } from "@mantine/core";
+import { checkTheme } from "util/theme";
+import { ReactNode, lazy, Suspense, useState } from "react";
+
+const Footer = lazy(() => import("./Footer"));
 
 interface PropTypes {
   children: ReactNode;
@@ -38,6 +39,9 @@ export default function Layout({ children }: PropTypes) {
           >
             {children}
           </Paper>
+          <Suspense fallback={null}>
+            <Footer />
+          </Suspense>
         </MantineProvider>
       </ColorSchemeProvider>
     </>

@@ -30,3 +30,9 @@
   width: calc(150% + 1.3px);
   height: 107px;
 }
+
+@media screen and (max-width: 768px) {
+  .container {
+    width: 90%;
+  }
+}

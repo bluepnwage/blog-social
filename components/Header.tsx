@@ -10,7 +10,7 @@ const useStyles = createStyles((theme) => ({
     display: "flex"
   },
   navbar: {
-    backgroundColor: checkTheme(theme, theme.white, theme.colors.dark[7]),
+    backgroundColor: checkTheme(theme, theme.white, theme.colors.dark[8]),
     borderBottom: checkTheme(theme, theme.colors.gray[4], theme.colors.dark[4]),
     height: 70,
     justifyContent: "center",
