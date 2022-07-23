@@ -16,6 +16,6 @@
     "jsx": "preserve",
     "baseUrl": "."
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "components/home/index"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "components/home/index", "components/blogs/index"],
   "exclude": ["node_modules"]
 }

@@ -21,7 +21,7 @@ export default function Header() {
                 Home
               </Anchor>
             </Link>
-            <Link passHref href={"/"}>
+            <Link passHref href={"/blogs"}>
               <Anchor className={classes.navLinks} weight={600}>
                 Blogs
               </Anchor>
