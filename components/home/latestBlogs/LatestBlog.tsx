@@ -1,5 +1,6 @@
 import { Anchor, Avatar, Card, Group, Image, Stack, Text, Title } from "@mantine/core";
 import { useStyles } from "./styles";
+import Link from "next/link";
 
 export function LatestBlog() {
   const { classes } = useStyles();
@@ -29,7 +30,9 @@ export function LatestBlog() {
           dolor consectetur magna elit. Mollit excepteur sint irure consequat ipsum esse reprehenderit exercitation
           consectetur occaecat.
         </Text>
-        <Anchor>Read article</Anchor>
+        <Link passHref href={"/blogs/3"}>
+          <Anchor>Read article</Anchor>
+        </Link>
         <Group mt={"md"}>
           <Avatar
             imageProps={{ loading: "lazy" }}
