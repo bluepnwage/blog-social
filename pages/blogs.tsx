@@ -1,6 +1,5 @@
-import { Title, Divider, createStyles, Select } from "@mantine/core";
-import { Filters } from "components/blogs/filters/Filters";
-import { BlogList } from "components/blogs/blogList/BlogList";
+import { Filters, BlogList } from "components/blogs";
+
 export default function Blogs() {
   return (
     <>

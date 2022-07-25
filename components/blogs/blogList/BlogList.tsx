@@ -1,4 +1,4 @@
-import { Title, SimpleGrid } from "@mantine/core";
+import { SimpleGrid } from "@mantine/core";
 import { useStyles } from "./styles";
 import { Blog } from "./Blog";
 

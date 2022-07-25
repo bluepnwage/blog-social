@@ -2,6 +2,7 @@ import { BlogAuthor, BlogImage, BlogTitle, BlogArticle } from "components/blog-p
 import { Suspense, lazy } from "react";
 
 const BlogStats = lazy(() => import("components/blog-page/blog/BlogStats"));
+const RelatedBlogs = lazy(() => import("components//blog-page/relatedBlogs/RelatedList"));
 
 export default function Blog() {
   return (
@@ -17,6 +18,9 @@ export default function Blog() {
           <BlogStats />
         </Suspense>
       </section>
+      <Suspense fallback={null}>
+        <RelatedBlogs />
+      </Suspense>
     </>
   );
 }
