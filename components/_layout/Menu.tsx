@@ -3,6 +3,7 @@ import { useStyles } from "./styles";
 import { User, Logout, Sun, Moon } from "tabler-icons-react";
 import { checkTheme } from "util/theme";
 import { useDisclosure, useClickOutside } from "@mantine/hooks";
+import { NextLink } from "@mantine/next";
 
 export default function Menu() {
   const { classes, theme } = useStyles();
@@ -30,7 +31,9 @@ export default function Menu() {
         <MantineMenu.Dropdown>
           <div ref={ref}>
             <MantineMenu.Label>Profile</MantineMenu.Label>
-            <MantineMenu.Item icon={<User size={16} />}>Dashboard</MantineMenu.Item>
+            <MantineMenu.Item component={NextLink} href={"/dashboard/bluepnwage"} icon={<User size={16} />}>
+              Dashboard
+            </MantineMenu.Item>
             <MantineMenu.Item closeMenuOnClick={false} onClick={() => toggleColorScheme()} icon={icon}>
               Change theme
             </MantineMenu.Item>
