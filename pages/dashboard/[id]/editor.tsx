@@ -1,11 +1,11 @@
-import { Title } from "@mantine/core";
 import { Layout } from "@components/dashboard";
+import { BlogList } from "@components/dashboard/editor-page/BlogList";
 
 export default function Editor() {
   return (
     <>
       <Layout>
-        <Title order={1}>This is the page for the editor</Title>
+        <BlogList />
       </Layout>
     </>
   );
