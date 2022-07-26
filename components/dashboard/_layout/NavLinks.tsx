@@ -30,7 +30,10 @@ export function NavLinks() {
   return (
     <>
       {links.map((link) => {
-        const active = link.href === path;
+        const editorRoute = "/dashboard/bluepnwage/editor";
+        const editorActive = path.includes(editorRoute) && link.href === editorRoute;
+
+        const active = link.href === path || editorActive;
 
         return (
           <Link href={link.href} key={link.label} passHref>

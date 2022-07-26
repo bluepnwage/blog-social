@@ -35,7 +35,7 @@ export function FeaturedBlog() {
               ea. Occaecat ullamco qui fugiat quis. Ex incididunt aute pariatur ad laborum qui et veniam.
             </Text>
           </article>
-          <Link passHref href={"/"}>
+          <Link passHref href={"/blogs/438"}>
             <Anchor>Read article</Anchor>
           </Link>
           <Group mt={"md"}>
