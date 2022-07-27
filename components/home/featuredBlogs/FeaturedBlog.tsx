@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { Anchor, Avatar, Group, Image, Stack, Text, Title } from "@mantine/core";
+import { Anchor, Avatar, Group, Image, Stack, Text, Title, UnstyledButton } from "@mantine/core";
 import { useStyles } from "./styles";
+import { Suspense, lazy } from "react";
 
-interface PropTypes {}
+const ProfileModal = lazy(() => import("@components/modal/ProfileModal"));
 
 export function FeaturedBlog() {
   const { classes, cx } = useStyles();
@@ -38,21 +39,25 @@ export function FeaturedBlog() {
           <Link passHref href={"/blogs/438"}>
             <Anchor>Read article</Anchor>
           </Link>
-          <Group mt={"md"}>
-            <Avatar
-              imageProps={{ loading: "lazy" }}
-              src={"bluepnwage.jpg"}
-              radius={"xl"}
-              size={"lg"}
-              alt={"Profile picture for author"}
-            />
-            <Stack spacing={5}>
-              <Text component="strong">Agis Carty</Text>
-              <Text component="span" color={"dimmed"}>
-                Front-end Developer
-              </Text>
-            </Stack>
-          </Group>
+          <Suspense fallback={null}>
+            <ProfileModal>
+              <Group mt={"md"}>
+                <Avatar
+                  imageProps={{ loading: "lazy" }}
+                  src={"bluepnwage.jpg"}
+                  radius={"xl"}
+                  size={"lg"}
+                  alt={"Profile picture for author"}
+                />
+                <Stack spacing={5}>
+                  <Text component="strong">Agis Carty</Text>
+                  <Text component="span" color={"dimmed"}>
+                    Front-end Developer
+                  </Text>
+                </Stack>
+              </Group>
+            </ProfileModal>
+          </Suspense>
         </div>
       </div>
     </>

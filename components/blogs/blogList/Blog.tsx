@@ -1,11 +1,14 @@
+import Link from "next/link";
 import { Anchor, Avatar, Card, Group, Image, Stack, Text, Title } from "@mantine/core";
 import { useStyles } from "./styles";
-import Link from "next/link";
+import { Suspense, lazy } from "react";
+
+const ProfileModal = lazy(() => import("@components/modal/ProfileModal"));
 
 export function Blog() {
   const { classes } = useStyles();
   return (
-    <>
+    <Suspense fallback={null}>
       <Card className={classes.card}>
         <Card.Section component={"figure"} className={classes.imageContainer}>
           <Image
@@ -33,24 +36,28 @@ export function Blog() {
         <Link passHref href={"/blogs/2"}>
           <Anchor>Read article</Anchor>
         </Link>
-        <Group mt={"md"}>
-          <Avatar
-            imageProps={{ loading: "lazy" }}
-            src={"bluepnwage.jpg"}
-            radius={"xl"}
-            size={"md"}
-            alt={"Profile picture for author"}
-          />
-          <Stack spacing={0}>
-            <Text size="sm" component="strong">
-              Agis Carty
-            </Text>
-            <Text size="sm" component="span" color={"dimmed"}>
-              Front-end Developer
-            </Text>
-          </Stack>
-        </Group>
+        <Suspense fallback={null}>
+          <ProfileModal>
+            <Group mt={"md"}>
+              <Avatar
+                imageProps={{ loading: "lazy" }}
+                src={"bluepnwage.jpg"}
+                radius={"xl"}
+                size={"md"}
+                alt={"Profile picture for author"}
+              />
+              <Stack spacing={0}>
+                <Text size="sm" component="strong">
+                  Agis Carty
+                </Text>
+                <Text size="sm" component="span" color={"dimmed"}>
+                  Front-end Developer
+                </Text>
+              </Stack>
+            </Group>
+          </ProfileModal>
+        </Suspense>
       </Card>
-    </>
+    </Suspense>
   );
 }
