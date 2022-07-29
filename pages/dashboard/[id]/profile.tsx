@@ -6,16 +6,26 @@ import { getUser, withPageAuth, supabaseServerClient } from "@supabase/auth-help
 interface User {
   email: string;
   website: string;
+  id: string;
+  bio: string;
+  twitter: string;
+  github: string;
+  city: string;
+  country: string;
+  first_name: string;
+  last_name: string;
+  access_token: string;
+  user: any;
 }
 
-export default function Profile({ email, website }: User) {
+export default function Profile(props: User) {
   return (
     <>
       <Layout>
         <Title mb={"xl"} order={1}>
           Edit your profile
         </Title>
-        <UpdateProfile email={email} website={website} />
+        <UpdateProfile {...props} />
       </Layout>
     </>
   );
@@ -24,13 +34,17 @@ export default function Profile({ email, website }: User) {
 export const getServerSideProps = withPageAuth({
   redirectTo: "/signin",
   async getServerSideProps(context) {
-    const { user } = await getUser(context);
-    const { data } = await supabaseServerClient(context).from("profiles").select("website").single();
-    console.log("This is the data", data.website);
+    const { user: currentUser } = await getUser(context);
+    const { data } = await supabaseServerClient(context)
+      .from("profiles")
+      .select("first_name, last_name, twitter, github, bio, website, city, country")
+      .single();
+    const { access_token, user, ...userData } = data;
     return {
       props: {
-        email: user.email,
-        website: data.website
+        ...userData,
+        email: currentUser.email,
+        id: currentUser.id
       }
     };
   }
