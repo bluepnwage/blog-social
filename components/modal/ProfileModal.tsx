@@ -2,13 +2,13 @@ import { GroupedTransition, UnstyledButton } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useStyles } from "./styles";
 import { Modal } from "./Modal";
-import { ReactNode } from "react";
+import { ReactNode, memo } from "react";
 
 interface PropTypes {
   children: ReactNode;
 }
 
-export default function ProfileModal({ children }: PropTypes) {
+function ProfileModal({ children }: PropTypes) {
   const { classes, cx } = useStyles();
   const [opened, handler] = useDisclosure(false);
   return (
@@ -34,3 +34,5 @@ export default function ProfileModal({ children }: PropTypes) {
     </>
   );
 }
+
+export default memo(ProfileModal);

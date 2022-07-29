@@ -1,8 +1,9 @@
 import { Container, Group, ActionIcon, Image, Text } from "@mantine/core";
 import { BrandTwitter, BrandYoutube, BrandGithub } from "tabler-icons-react";
 import { useStyles } from "./styles";
+import { memo } from "react";
 
-export default function Footer() {
+function Footer() {
   const { classes } = useStyles();
 
   return (
@@ -27,3 +28,5 @@ export default function Footer() {
     </div>
   );
 }
+
+export default memo(Footer);

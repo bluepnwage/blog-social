@@ -4,8 +4,9 @@ import { User, Logout, Sun, Moon } from "tabler-icons-react";
 import { checkTheme } from "util/theme";
 import { useDisclosure, useClickOutside } from "@mantine/hooks";
 import { NextLink } from "@mantine/next";
+import { memo } from "react";
 
-export default function Menu() {
+function Menu() {
   const { classes, theme } = useStyles();
   const { toggleColorScheme } = useMantineColorScheme();
   const [opened, handler] = useDisclosure(false);
@@ -16,6 +17,11 @@ export default function Menu() {
     <Moon size={16} color={theme.colors.blue[4]} />,
     <Sun size={16} color={theme.colors.yellow[4]} />
   );
+
+  const logOut = async () => {
+    await fetch("/api/auth/logout");
+    location.reload();
+  };
 
   return (
     <>
@@ -38,6 +44,7 @@ export default function Menu() {
               Change theme
             </MantineMenu.Item>
             <MantineMenu.Item
+              onClick={() => logOut()}
               icon={<Logout color={checkTheme(theme, theme.colors.red[7], theme.colors.red[4])} size={16} />}
             >
               Sign out
@@ -48,3 +55,5 @@ export default function Menu() {
     </>
   );
 }
+
+export default memo(Menu);

@@ -1,7 +1,8 @@
 import "../styles/globals.css";
 import Layout from "components/_layout/Layout";
 import Head from "next/head";
-
+import { UserProvider } from "@supabase/auth-helpers-react";
+import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 function MyApp({ Component, pageProps }) {
   return (
     <>
@@ -11,9 +12,11 @@ function MyApp({ Component, pageProps }) {
         <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <UserProvider supabaseClient={supabaseClient}>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </UserProvider>
     </>
   );
 }

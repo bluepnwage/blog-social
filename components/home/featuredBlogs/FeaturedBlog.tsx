@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Anchor, Avatar, Group, Image, Stack, Text, Title, UnstyledButton } from "@mantine/core";
+import { Anchor, Avatar, Group, Image, Stack, Text, Title } from "@mantine/core";
 import { useStyles } from "./styles";
 import { Suspense, lazy } from "react";
 

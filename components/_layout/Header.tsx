@@ -1,17 +1,18 @@
 import Link from "next/link";
-import { Image, Anchor, Group, Text, Avatar } from "@mantine/core";
+import Menu from "./Menu";
+import { Image, Anchor, Group, Text, Button } from "@mantine/core";
 import { useStyles } from "./styles";
-import { Suspense, lazy } from "react";
-
-const Menu = lazy(() => import("./Menu"));
+import { Suspense } from "react";
+import { useUser } from "@supabase/auth-helpers-react";
 
 export default function Header() {
+  const { user, error, isLoading } = useUser();
   const { classes, cx } = useStyles();
   return (
     <>
       <header className={cx("section-container", classes.navbar)}>
         <nav className={cx("container", classes.flex, classes.navContainer)}>
-          <Group>
+          <Group spacing={5} mr={-100}>
             <Image src={"/logo-icon.svg"} imageProps={{ loading: "lazy" }} height={48} width={48} alt={"Logo"} />
             <Text className={classes.logo}>Blog Social</Text>
           </Group>
@@ -28,9 +29,14 @@ export default function Header() {
             </Link>
           </Group>
           <Group className={classes.mobile} spacing={"lg"}>
-            <Suspense fallback={<Avatar src={"bluepnwage.jpg"} radius={"xl"} size={"xs"} />}>
-              <Menu />
-            </Suspense>
+            {!user && (
+              <Link href={"/signin"} passHref>
+                <Button component="a" variant="outline">
+                  Sign in
+                </Button>
+              </Link>
+            )}
+            <Suspense fallback={null}>{user && !isLoading && <Menu />}</Suspense>
           </Group>
         </nav>
       </header>

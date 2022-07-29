@@ -10,6 +10,7 @@ export const useStyles = createStyles((theme) => ({
   card: {
     backgroundColor: checkTheme(theme, theme.colors.gray[0], ""),
     boxShadow: checkTheme(theme, theme.shadows.md, ""),
-    marginBottom: theme.spacing.lg
+    marginBottom: theme.spacing.lg,
+    position: "relative"
   }
 }));
