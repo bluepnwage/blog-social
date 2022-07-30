@@ -3,12 +3,16 @@ import { File, Heart, FilePencil, TrendingUp } from "tabler-icons-react";
 import { StatCard, PropTypes as StatCardProps } from "./StatCard";
 import { useStyles } from "./styles";
 
-export function StatList() {
+interface PropTypes {
+  count: number;
+}
+
+export function StatList({ count }: PropTypes) {
   const { classes, cx } = useStyles();
   const stats: StatCardProps[] = [
     {
       icon: <File />,
-      statAmount: 26,
+      statAmount: count,
       statTitle: "Total Blogs",
       secondaryStat: "#2 most blogs"
     },

@@ -1,21 +1,27 @@
 import { RichTextEditor } from "@mantine/rte";
 import { FormEvent, useState, useMemo } from "react";
-import { Title, TextInput, Button, Stack, Textarea, Tabs } from "@mantine/core";
+import { Title, TextInput, Button, Stack, Textarea, Tabs, LoadingOverlay } from "@mantine/core";
 import { FilePencil, BrandHtml5 } from "tabler-icons-react";
 import { useStyles } from "./styles";
 import { ImageUpload } from "./ImageUpload";
 import { PreviewCard } from "./PreviewCard";
+import { Blog } from "pages/dashboard/[id]/editor/[slug]";
 
 interface Form {
   heading: string;
   description: string;
+  content: string;
 }
 
-export default function EditorContainer() {
-  const [form, setForm] = useState<Form>({ heading: "", description: "" });
+export default function EditorContainer(blog: Blog) {
+  const [form, setForm] = useState<Form>({
+    heading: blog.heading,
+    description: blog.description,
+    content: blog.content
+  });
   const [value, setValue] = useState("");
   const [files, setFile] = useState<File[]>([]);
-  const [showEditor, setShow] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { classes, cx } = useStyles();
 
   const previewDisabled = !form.heading || !form.description || files.length === 0;
@@ -29,14 +35,24 @@ export default function EditorContainer() {
     }));
   };
 
-  const handleSubmit = () => {
-    setForm({ heading: "", description: "" });
-    setValue("");
-    setFile([]);
-    setShow(false);
-    setTimeout(() => {
-      setShow(true);
-    }, 50);
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/create-blog", {
+        method: "PUT",
+        headers: { "Content-Type": "application" },
+        body: JSON.stringify({ ...form, id: blog.id })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        console.log(json);
+      } else {
+        throw new Error("Something happened");
+      }
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
   };
 
   const imageURL = useMemo(() => {
@@ -49,7 +65,7 @@ export default function EditorContainer() {
     <>
       <div className={cx(classes.container, classes.flex)}>
         <Title order={1} mb={"xl"}>
-          My first blog
+          {blog.title}
         </Title>
         <Tabs defaultValue="editor" style={{ width: "80%" }}>
           <Tabs.List position="right">
@@ -65,7 +81,8 @@ export default function EditorContainer() {
             </Tabs.Tab>
           </Tabs.List>
           <Tabs.Panel pt={"md"} value="editor">
-            <Stack>
+            <Stack style={{ position: "relative" }}>
+              <LoadingOverlay visible={loading} />
               <TextInput
                 onChange={handleChange}
                 name={"heading"}
@@ -83,7 +100,7 @@ export default function EditorContainer() {
                 placeholder="Random placeholder"
               />
               <ImageUpload onDrop={setFile} />
-              {showEditor && <RichTextEditor value={value} onChange={setValue} />}
+              <RichTextEditor value={value} onChange={setValue} />
               <Button onClick={handleSubmit} disabled={buttonDisabled} color={"green"}>
                 Submit
               </Button>

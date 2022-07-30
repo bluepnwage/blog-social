@@ -2,8 +2,11 @@ import { Title, Table, UnstyledButton, Group, Text, Stack, TextInput } from "@ma
 import { ChevronDown, ChevronUp, Search } from "tabler-icons-react";
 import { useStyles } from "./styles";
 
-export function AllBlogs() {
-  const blogs = Array(10).fill(null);
+interface PropTypes {
+  blogs: any[];
+}
+
+export function AllBlogs({ blogs }: PropTypes) {
   const { classes, cx } = useStyles();
   return (
     <>

@@ -1,18 +1,22 @@
 import { Title } from "@mantine/core";
 import { Layout } from "components/dashboard";
 import { StatList, AllBlogs } from "@components/dashboard/index-page";
-import { withPageAuth, getUser } from "@supabase/auth-helpers-nextjs";
+import { withPageAuth, supabaseServerClient } from "@supabase/auth-helpers-nextjs";
 
-export default function Dashboard({ user }) {
-  console.log(user);
+interface PropTypes {
+  count: number;
+  blogs: any[];
+  name: string;
+}
+export default function Dashboard({ count, blogs, name }: PropTypes) {
   return (
     <>
       <Layout>
         <Title mb={"xl"} order={1}>
-          Welcome Back {user.email}
+          Welcome Back {name}
         </Title>
-        <StatList />
-        <AllBlogs />
+        <StatList count={count} />
+        <AllBlogs blogs={blogs} />
       </Layout>
     </>
   );
@@ -21,10 +25,16 @@ export default function Dashboard({ user }) {
 export const getServerSideProps = withPageAuth({
   redirectTo: "/signin",
   async getServerSideProps(context) {
-    const { user } = await getUser(context);
+    const [{ body: blogs, count: blogCount }, { body: user }] = await Promise.all([
+      await supabaseServerClient(context).from("blogs").select("*"),
+      await supabaseServerClient(context).from<{ first_name: string }>("profiles").select("first_name").single()
+    ]);
+    const count = blogCount || 0;
     return {
       props: {
-        user
+        count,
+        blogs,
+        name: user.first_name
       }
     };
   }
