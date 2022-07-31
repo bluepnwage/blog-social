@@ -1,6 +1,6 @@
 import { NextApiHandler } from "next";
 import { withApiAuth, supabaseServerClient, getUser } from "@supabase/auth-helpers-nextjs";
-import { Blog } from "pages/dashboard/[id]/editor/[slug]";
+import { Blog } from "@interfaces/supabase";
 
 const handler: NextApiHandler = async (req, res) => {
   try {
@@ -9,7 +9,7 @@ const handler: NextApiHandler = async (req, res) => {
         const { title } = req.body;
         const { user } = await getUser({ req, res });
         const test = await supabaseServerClient({ req, res })
-          .from("blogs")
+          .from<Blog>("blogs")
           .insert([{ title, author_id: user.id }]);
         console.log(test);
         return res.status(201).json({ id: test.body[0].id });
@@ -28,7 +28,7 @@ const handler: NextApiHandler = async (req, res) => {
       }
       case "DELETE": {
         const { id } = req.body;
-        const { data, error } = await supabaseServerClient({ req, res }).from("blogs").delete().match({ id });
+        const { data, error } = await supabaseServerClient({ req, res }).from<Blog>("blogs").delete().match({ id });
         console.log(id);
         if (error) throw new Error(error.message);
         console.log("Deleted succesfully", data);

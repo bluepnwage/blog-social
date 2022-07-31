@@ -12,9 +12,10 @@ import {
   LoadingOverlay
 } from "@mantine/core";
 import { useStyles } from "./styles";
-import { BrandTwitter, BrandLinkedin, BrandHtml5, At, Location, BrandGithub } from "tabler-icons-react";
+import { BrandTwitter, ReportMoney, BrandHtml5, At, Location, BrandGithub } from "tabler-icons-react";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import { FormEvent, useState } from "react";
+import { User } from "@interfaces/supabase";
 
 interface Form {
   website: string;
@@ -25,14 +26,10 @@ interface Form {
   bio: string;
   first_name: string;
   last_name: string;
+  occupation: string;
 }
 
-interface User extends Form {
-  email: string;
-  id: string;
-}
-
-export function UpdateProfile({ email, id, ...formProps }: User) {
+export function UpdateProfile({ id, ...formProps }: User) {
   const [form, setForm] = useState<Form>({
     ...formProps
   });
@@ -40,7 +37,7 @@ export function UpdateProfile({ email, id, ...formProps }: User) {
   const { classes, cx } = useStyles();
 
   async function updateProfile() {
-    const { bio, city, country, first_name, github, last_name, twitter, website } = form;
+    const { bio, city, country, first_name, github, last_name, twitter, website, occupation } = form;
     try {
       setLoading(true);
       const updates = {
@@ -53,6 +50,7 @@ export function UpdateProfile({ email, id, ...formProps }: User) {
         last_name,
         twitter,
         website,
+        occupation,
         updated_at: new Date()
       };
 
@@ -109,7 +107,6 @@ export function UpdateProfile({ email, id, ...formProps }: User) {
               placeholder={"Carty"}
             />
           </Group>
-          <NumberInput label={"Age"} />
           <Divider mt={"md"} />
           <Text>CONTACT INFORMATION</Text>
           <TextInput label={"Email"} icon={<At size={16} />} placeholder={"hellothere@gmail.com"} />
@@ -160,9 +157,18 @@ export function UpdateProfile({ email, id, ...formProps }: User) {
               name="github"
               placeholder={"bluepnwage"}
             />
-            <TextInput icon={<BrandLinkedin size={16} />} label={"LinkedIn"} placeholder={"Agis Carty"} />
+            <TextInput
+              onChange={handleChange}
+              name={"occupation"}
+              icon={<ReportMoney size={16} />}
+              value={form.occupation}
+              label={"Occupation"}
+              placeholder={"Front-end Engineer"}
+            />
           </Group>
           <Textarea
+            maxRows={5}
+            autosize
             name={"bio"}
             value={form.bio}
             onChange={handleChange}

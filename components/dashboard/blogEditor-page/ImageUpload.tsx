@@ -12,7 +12,7 @@ export function ImageUpload(props: Partial<DropzoneProps>) {
       accept={IMAGE_MIME_TYPE}
       {...props}
     >
-      <Group position="center" spacing="xl" style={{ minHeight: 220, pointerEvents: "none" }}>
+      <Group position="center" spacing="xl" style={{ pointerEvents: "none" }}>
         <Dropzone.Accept>
           <Upload size={50} color={theme.colors[theme.primaryColor][theme.colorScheme === "dark" ? 4 : 6]} />
         </Dropzone.Accept>
@@ -28,7 +28,7 @@ export function ImageUpload(props: Partial<DropzoneProps>) {
             Drag images here or click to select files
           </Text>
           <Text size="sm" color="dimmed" inline mt={7}>
-            Attach as many files as you like, each file should not exceed 5mb
+            File should not exceed 5mb
           </Text>
         </div>
       </Group>

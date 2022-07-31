@@ -1,20 +1,59 @@
 import Link from "next/link";
-import { Card, Text, ActionIcon, Group, Stack } from "@mantine/core";
+import { Card, Text, ActionIcon, Group, Stack, Modal, Button, LoadingOverlay } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { Trash, FilePencil } from "tabler-icons-react";
 import { useStyles } from "./styles";
-import { Blog } from "pages/dashboard/[id]/editor/[slug]";
+import { Blog } from "@interfaces/supabase";
+import { formatDate } from "@util/formatDate";
 
 interface PropTypes {
   blog: Blog;
-  onDelete: (id: number) => Promise<void>;
+  onDelete: (id: number) => void;
 }
 
 export function BlogCard({ blog, onDelete }: PropTypes) {
   const { classes, cx } = useStyles();
-  const date = new Date(blog.created_at).toLocaleDateString();
+  const [opened, handler] = useDisclosure(false);
+  const [loading, load] = useDisclosure(false);
+
+  const date = new Date(blog.created_at);
+
+  const handleClick = async () => {
+    load.open();
+    try {
+      const res = await fetch("/api/create-blog", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: blog.id })
+      });
+      if (res.ok) {
+        onDelete(blog.id);
+        handler.close();
+      } else {
+        throw new Error("An error ocurred");
+      }
+    } catch (error) {
+      alert("An error ocurred");
+    } finally {
+      load.close();
+    }
+  };
 
   return (
     <>
+      <Modal title="Caution" opened={opened} onClose={handler.close}>
+        <Card style={{ position: "relative" }}>
+          <LoadingOverlay visible={loading} />
+          <Text mb={"md"}>Are you sure you want to delete? This action is irreversible</Text>
+          <Group>
+            <Button onClick={handler.close}>Keep project</Button>
+            <Button variant="light" onClick={handleClick} color={"red"}>
+              Delete project
+            </Button>
+          </Group>
+        </Card>
+      </Modal>
+
       <Card className={cx(classes.blogCard, classes.flex)}>
         <Group position="apart">
           <Stack spacing={0}>
@@ -25,7 +64,7 @@ export function BlogCard({ blog, onDelete }: PropTypes) {
           </Stack>
           <ActionIcon
             component="button"
-            onClick={() => onDelete(blog.id)}
+            onClick={handler.open}
             variant="light"
             aria-label="Delete blog"
             size={"lg"}
@@ -41,7 +80,7 @@ export function BlogCard({ blog, onDelete }: PropTypes) {
               <FilePencil />
             </ActionIcon>
           </Link>
-          <Text component="time">{date}</Text>
+          <Text component="time">{formatDate(date)}</Text>
         </Group>
       </Card>
     </>

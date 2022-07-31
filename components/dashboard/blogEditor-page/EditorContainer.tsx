@@ -1,31 +1,36 @@
 import { RichTextEditor } from "@mantine/rte";
 import { FormEvent, useState, useMemo } from "react";
-import { Title, TextInput, Button, Stack, Textarea, Tabs, LoadingOverlay } from "@mantine/core";
+import { Title, TextInput, Button, Stack, Textarea, Tabs, LoadingOverlay, SimpleGrid } from "@mantine/core";
 import { FilePencil, BrandHtml5 } from "tabler-icons-react";
 import { useStyles } from "./styles";
 import { ImageUpload } from "./ImageUpload";
 import { PreviewCard } from "./PreviewCard";
-import { Blog } from "pages/dashboard/[id]/editor/[slug]";
+import { ImagePreview } from "./ImagePreview";
+import { Blog } from "@interfaces/supabase";
+import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 
 interface Form {
   heading: string;
   description: string;
-  content: string;
 }
 
-export default function EditorContainer(blog: Blog) {
+interface PropTypes {
+  image: string;
+  blog: Blog;
+}
+
+export default function EditorContainer({ image, blog }: PropTypes) {
   const [form, setForm] = useState<Form>({
     heading: blog.heading,
-    description: blog.description,
-    content: blog.content
+    description: blog.description
   });
-  const [value, setValue] = useState("");
+  const [content, setContent] = useState(blog.content);
   const [files, setFile] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const { classes, cx } = useStyles();
 
-  const previewDisabled = !form.heading || !form.description || files.length === 0;
-  const buttonDisabled = !form.heading || !form.description || files.length === 0 || !value;
+  const previewDisabled = !form.heading || !form.description || (files.length === 0 && !image);
+  const buttonDisabled = !form.heading || !form.description || (files.length === 0 && !image) || !content;
 
   const handleChange = (e: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { value, name } = e.currentTarget;
@@ -37,11 +42,13 @@ export default function EditorContainer(blog: Blog) {
 
   const handleSubmit = async () => {
     setLoading(true);
+
     try {
+      const thumbnail = await uploadImage();
       const res = await fetch("/api/create-blog", {
         method: "PUT",
         headers: { "Content-Type": "application" },
-        body: JSON.stringify({ ...form, id: blog.id })
+        body: JSON.stringify({ ...form, id: blog.id, content, thumbnail })
       });
       if (res.ok) {
         const json = await res.json();
@@ -50,9 +57,20 @@ export default function EditorContainer(blog: Blog) {
         throw new Error("Something happened");
       }
     } catch (error) {
+      alert(error.message);
     } finally {
       setLoading(false);
     }
+  };
+
+  const uploadImage = async () => {
+    const user = supabaseClient.auth.user();
+    const [file] = files;
+    const filePath = `${user.id}/thumbnails/${file.name}`;
+    console.log(filePath);
+    const { data, error } = await supabaseClient.storage.from("img").upload(filePath, file, { contentType: file.type });
+    if (error) throw new Error(error.message);
+    return data.Key;
   };
 
   const imageURL = useMemo(() => {
@@ -99,17 +117,21 @@ export default function EditorContainer(blog: Blog) {
                 label="Description"
                 placeholder="Random placeholder"
               />
-              <ImageUpload onDrop={setFile} />
-              <RichTextEditor value={value} onChange={setValue} />
+              <SimpleGrid cols={2}>
+                <ImageUpload onDrop={setFile} />
+                <ImagePreview src={imageURL} />
+              </SimpleGrid>
+              <RichTextEditor value={content} onChange={setContent} />
               <Button onClick={handleSubmit} disabled={buttonDisabled} color={"green"}>
                 Submit
               </Button>
             </Stack>
           </Tabs.Panel>
           <Tabs.Panel className={cx(classes.flex, classes.previewTab)} pt={"md"} value="preview">
-            <PreviewCard {...form} image={imageURL} />
+            <PreviewCard created_at={blog.created_at} {...form} image={imageURL || image} />
           </Tabs.Panel>
         </Tabs>
+        <Button onClick={uploadImage}>Test</Button>
       </div>
     </>
   );

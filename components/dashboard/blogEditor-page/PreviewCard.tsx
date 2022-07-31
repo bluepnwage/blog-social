@@ -1,15 +1,16 @@
 import { Card, Text, Title, Anchor, Image, Group, Avatar, Stack } from "@mantine/core";
 import { useStyles } from "./styles";
-
+import { formatDate } from "@util/formatDate";
 interface PropTypes {
   heading: string;
   description: string;
   image: string;
+  created_at: string;
 }
 
-export function PreviewCard({ description, heading, image }: PropTypes) {
+export function PreviewCard({ description, heading, image, created_at }: PropTypes) {
   const { classes } = useStyles();
-  const date = new Date().toLocaleDateString();
+  const date = new Date(created_at);
   return (
     <>
       <Card className={classes.card}>
@@ -25,7 +26,7 @@ export function PreviewCard({ description, heading, image }: PropTypes) {
         <Text component="strong">
           Travel —{" "}
           <Text component="time" weight={400} color={"dimmed"}>
-            {date}
+            {formatDate(date)}
           </Text>
         </Text>
         <Title mb={"md"} order={3}>

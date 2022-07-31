@@ -2,11 +2,10 @@ import Link from "next/link";
 import Menu from "./Menu";
 import { Image, Anchor, Group, Text, Button } from "@mantine/core";
 import { useStyles } from "./styles";
-import { Suspense } from "react";
 import { useUser } from "@supabase/auth-helpers-react";
 
 export default function Header() {
-  const { user, error, isLoading } = useUser();
+  const { user } = useUser();
   const { classes, cx } = useStyles();
   return (
     <>
@@ -36,7 +35,7 @@ export default function Header() {
                 </Button>
               </Link>
             )}
-            <Suspense fallback={null}>{user && !isLoading && <Menu />}</Suspense>
+            {user && <Menu />}
           </Group>
         </nav>
       </header>

@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import { Layout } from "@components/dashboard";
 import { EditorLoading } from "@components/dashboard/blogEditor-page/EditorLoading";
 import { withPageAuth, supabaseServerClient, getUser } from "@supabase/auth-helpers-nextjs";
+import { Blog } from "@interfaces/supabase";
 
 const EditorContainer = dynamic(() => import("@components/dashboard/blogEditor-page/EditorContainer"), {
   ssr: false,
@@ -10,13 +11,15 @@ const EditorContainer = dynamic(() => import("@components/dashboard/blogEditor-p
 
 interface PropTypes {
   blog: Blog;
+  image: string;
 }
 
-export default function BlogProject({ blog }: PropTypes) {
+export default function BlogProject({ blog, image }: PropTypes) {
+  const thumbnail = image ? URL.createObjectURL(JSON.parse(image)) : "";
   return (
     <>
       <Layout>
-        <EditorContainer {...blog} />
+        <EditorContainer blog={blog} image={thumbnail} />
       </Layout>
     </>
   );
@@ -25,7 +28,6 @@ export default function BlogProject({ blog }: PropTypes) {
 export const getServerSideProps = withPageAuth({
   redirectTo: "/signin",
   async getServerSideProps(context) {
-    console.log(context.params);
     const { user } = await getUser(context);
     const { body, error } = await supabaseServerClient(context)
       .from<Blog>("blogs")
@@ -33,6 +35,10 @@ export const getServerSideProps = withPageAuth({
       .eq("author_id", user.id)
       .eq("id", parseInt(context.params.slug as string))
       .single();
+    console.log("hello", body.heading);
+    const thumbnailKey = body.thumbnail.slice(4);
+    const { data, error: imgError } = await supabaseServerClient(context).storage.from("img").download(thumbnailKey);
+
     if (error) {
       return {
         notFound: true
@@ -40,21 +46,9 @@ export const getServerSideProps = withPageAuth({
     }
     return {
       props: {
-        blog: body
+        blog: body,
+        thumbnail: imgError ? "" : JSON.stringify(data)
       }
     };
   }
 });
-
-export interface Blog {
-  id: number;
-  created_at: string;
-  title: string;
-  heading: string;
-  content: string;
-  description: string;
-  thumbnail: string;
-  updated_at: string;
-  author_id: string;
-  published: string;
-}

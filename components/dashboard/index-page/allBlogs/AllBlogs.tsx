@@ -1,9 +1,11 @@
+import { Blog } from "@interfaces/supabase";
 import { Title, Table, UnstyledButton, Group, Text, Stack, TextInput } from "@mantine/core";
+import { formatDate } from "@util/formatDate";
 import { ChevronDown, ChevronUp, Search } from "tabler-icons-react";
 import { useStyles } from "./styles";
 
 interface PropTypes {
-  blogs: any[];
+  blogs: Blog[];
 }
 
 export function AllBlogs({ blogs }: PropTypes) {
@@ -11,7 +13,7 @@ export function AllBlogs({ blogs }: PropTypes) {
   return (
     <>
       <Title mb={"lg"} order={2}>
-        All Blogs
+        All of your blogs
       </Title>
       <TextInput
         icon={<Search size={18} />}
@@ -65,11 +67,12 @@ export function AllBlogs({ blogs }: PropTypes) {
           </tr>
         </thead>
         <tbody>
-          {blogs.map((_, key) => {
+          {blogs.map(({ created_at, title, id }) => {
+            const date = new Date(created_at);
             return (
-              <tr key={key}>
-                <td>My Blog</td>
-                <td>Jul 21, 2022</td>
+              <tr key={id}>
+                <td>{title}</td>
+                <td>{formatDate(date)}</td>
                 <td>56113</td>
               </tr>
             );

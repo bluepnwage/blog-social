@@ -2,21 +2,7 @@ import { Title } from "@mantine/core";
 import { Layout } from "@components/dashboard";
 import { UpdateProfile } from "@components/dashboard/profile-page/updateProfile/UpdateProfile";
 import { getUser, withPageAuth, supabaseServerClient } from "@supabase/auth-helpers-nextjs";
-
-interface User {
-  email: string;
-  website: string;
-  id: string;
-  bio: string;
-  twitter: string;
-  github: string;
-  city: string;
-  country: string;
-  first_name: string;
-  last_name: string;
-  access_token: string;
-  user: any;
-}
+import { User } from "@interfaces/supabase";
 
 export default function Profile(props: User) {
   return (
@@ -36,13 +22,13 @@ export const getServerSideProps = withPageAuth({
   async getServerSideProps(context) {
     const { user: currentUser } = await getUser(context);
     const { data } = await supabaseServerClient(context)
-      .from("profiles")
-      .select("first_name, last_name, twitter, github, bio, website, city, country")
+      .from<User>("profiles")
+      .select("first_name, last_name, twitter, github, bio, website, city, country, occupation")
       .single();
-    const { access_token, user, ...userData } = data;
+
     return {
       props: {
-        ...userData,
+        ...data,
         email: currentUser.email,
         id: currentUser.id
       }

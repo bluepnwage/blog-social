@@ -1,7 +1,7 @@
 import { Layout } from "@components/dashboard";
 import { BlogList } from "@components/dashboard/editor-page/BlogList";
+import { Blog } from "@interfaces/supabase";
 import { supabaseServerClient, withPageAuth } from "@supabase/auth-helpers-nextjs";
-import { Blog } from "./[slug]";
 
 interface PropTypes {
   blogs: Blog[];

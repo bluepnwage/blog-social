@@ -1,46 +1,40 @@
 import { Title, SimpleGrid } from "@mantine/core";
-import { Blog } from "pages/dashboard/[id]/editor/[slug]";
 import { BlogCard } from "./BlogCard";
 import { CreateBlog } from "./CreateBlog";
 import { SearchBlog } from "./SearchBlog";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { Blog } from "@interfaces/supabase";
 
 interface PropTypes {
   blogs: Blog[];
 }
 
 export function BlogList({ blogs }: PropTypes) {
-  const [blogList, setBlogList] = useState<Blog[]>(blogs);
+  const [, startTransition] = useTransition();
+  const [blogList, setBlogList] = useState(blogs);
+  const [filter, setFilter] = useState("");
 
-  const deleteBlog = async (id: number) => {
-    try {
-      const res = await fetch("/api/create-blog", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id })
-      });
-      if (res.ok) {
-        setBlogList((prev) => {
-          return prev.filter((blog) => blog.id !== id);
-        });
-      } else {
-        throw new Error("An error occureed");
-      }
-    } catch (error) {
-      alert("An error ocurred");
-    }
+  const deleteBlog = (id: number) => {
+    startTransition(() => {
+      setBlogList((prev) => prev.filter((blog) => blog.id !== id));
+    });
   };
 
+  const filterBlogs = () => {
+    return blogList.filter((blog) => blog.title.toLowerCase().includes(filter.toLowerCase()));
+  };
+
+  const filteredBlogs = filter ? filterBlogs() : blogList;
   return (
     <>
       <div className="container">
         <Title mb={"xl"} order={1}>
           Your blogs
         </Title>
-        <SearchBlog />
+        <SearchBlog filter={filter} onFilter={setFilter} />
         <SimpleGrid cols={2}>
           <CreateBlog />
-          {blogList.map((blog) => {
+          {filteredBlogs.map((blog) => {
             return <BlogCard onDelete={deleteBlog} blog={blog} key={blog.id} />;
           })}
         </SimpleGrid>

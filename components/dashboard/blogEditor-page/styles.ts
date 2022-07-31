@@ -24,5 +24,11 @@ export const useStyles = createStyles((theme) => ({
   },
   previewTab: {
     justifyContent: "center"
+  },
+  imagePreviewContainer: {
+    width: "100%",
+    height: "100%",
+    overflow: "hidden",
+    borderRadius: theme.radius.md
   }
 }));
