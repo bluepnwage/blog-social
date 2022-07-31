@@ -1,5 +1,5 @@
 import { RichTextEditor } from "@mantine/rte";
-import { FormEvent, useState, useMemo } from "react";
+import { FormEvent, useState, useMemo, useEffect } from "react";
 import { Title, TextInput, Button, Stack, Textarea, Tabs, LoadingOverlay, SimpleGrid } from "@mantine/core";
 import { FilePencil, BrandHtml5 } from "tabler-icons-react";
 import { useStyles } from "./styles";
@@ -15,11 +15,11 @@ interface Form {
 }
 
 interface PropTypes {
-  image: string;
   blog: Blog;
+  userID: string;
 }
 
-export default function EditorContainer({ image, blog }: PropTypes) {
+export default function EditorContainer({ blog, userID }: PropTypes) {
   const [form, setForm] = useState<Form>({
     heading: blog.heading,
     description: blog.description
@@ -27,10 +27,17 @@ export default function EditorContainer({ image, blog }: PropTypes) {
   const [content, setContent] = useState(blog.content);
   const [files, setFile] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
+  const [thumbnail, setThubmnail] = useState("");
+
   const { classes, cx } = useStyles();
 
-  const previewDisabled = !form.heading || !form.description || (files.length === 0 && !image);
-  const buttonDisabled = !form.heading || !form.description || (files.length === 0 && !image) || !content;
+  useEffect(() => {
+    if(!blog.thumbnail) return
+    downloadImage();
+  }, []);
+
+  const previewDisabled = !form.heading || !form.description || (files.length === 0 && !thumbnail);
+  const buttonDisabled = !form.heading || !form.description || (files.length === 0 && !thumbnail) || !content;
 
   const handleChange = (e: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { value, name } = e.currentTarget;
@@ -63,10 +70,22 @@ export default function EditorContainer({ image, blog }: PropTypes) {
     }
   };
 
+  const downloadImage = async () => {
+    try {
+      const thumbnailKey = blog.thumbnail.slice(4);
+      const { data, error } = await supabaseClient.storage.from("img").download(thumbnailKey);
+      console.log(thumbnailKey);
+      if (error) throw new Error(error.message);
+      const url = URL.createObjectURL(data);
+      setThubmnail(url);
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
   const uploadImage = async () => {
-    const user = supabaseClient.auth.user();
     const [file] = files;
-    const filePath = `${user.id}/thumbnails/${file.name}`;
+    const filePath = `${userID}/thumbnails/${file.name}`;
     console.log(filePath);
     const { data, error } = await supabaseClient.storage.from("img").upload(filePath, file, { contentType: file.type });
     if (error) throw new Error(error.message);
@@ -119,7 +138,7 @@ export default function EditorContainer({ image, blog }: PropTypes) {
               />
               <SimpleGrid cols={2}>
                 <ImageUpload onDrop={setFile} />
-                <ImagePreview src={imageURL} />
+                <ImagePreview src={imageURL || thumbnail} />
               </SimpleGrid>
               <RichTextEditor value={content} onChange={setContent} />
               <Button onClick={handleSubmit} disabled={buttonDisabled} color={"green"}>
@@ -128,10 +147,9 @@ export default function EditorContainer({ image, blog }: PropTypes) {
             </Stack>
           </Tabs.Panel>
           <Tabs.Panel className={cx(classes.flex, classes.previewTab)} pt={"md"} value="preview">
-            <PreviewCard created_at={blog.created_at} {...form} image={imageURL || image} />
+            <PreviewCard created_at={blog.created_at} {...form} image={imageURL || thumbnail} />
           </Tabs.Panel>
         </Tabs>
-        <Button onClick={uploadImage}>Test</Button>
       </div>
     </>
   );
