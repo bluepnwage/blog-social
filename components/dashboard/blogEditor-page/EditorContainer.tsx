@@ -55,7 +55,7 @@ export default function EditorContainer({ blog, userID }: PropTypes) {
       //Checks to see if there was a previous thumbnail and deletes it
       await deletePrevThumbnail();
 
-      const thumbnail = await uploadImage();
+      const thumbnail = files.length === 0 ? blog.thumbnail : await uploadImage();
       const res = await fetch("/api/create-blog", {
         method: "PUT",
         headers: { "Content-Type": "application" },
