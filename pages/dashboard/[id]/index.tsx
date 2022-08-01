@@ -10,13 +10,16 @@ interface PropTypes {
   name: string;
 }
 export default function Dashboard({ count, blogs, name }: PropTypes) {
+  const totalLikes = blogs.reduce((a, c) => {
+    return a + c.likes;
+  }, 0);
   return (
     <>
       <Layout>
         <Title mb={"xl"} order={1}>
           Welcome Back {name}
         </Title>
-        <StatList count={count} />
+        <StatList count={count} likes={totalLikes} />
         <AllBlogs blogs={blogs} />
       </Layout>
     </>

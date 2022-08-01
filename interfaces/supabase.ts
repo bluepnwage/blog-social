@@ -10,6 +10,7 @@ export interface Blog {
   author_id: string;
   published: string;
   slug: string;
+  likes: number;
 }
 
 export interface User {

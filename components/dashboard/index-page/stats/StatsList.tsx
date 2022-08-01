@@ -1,13 +1,14 @@
 import { SimpleGrid } from "@mantine/core";
-import { File, Heart, FilePencil, TrendingUp } from "tabler-icons-react";
+import { File, Heart } from "tabler-icons-react";
 import { StatCard, PropTypes as StatCardProps } from "./StatCard";
 import { useStyles } from "./styles";
 
 interface PropTypes {
   count: number;
+  likes: number;
 }
 
-export function StatList({ count }: PropTypes) {
+export function StatList({ count, likes }: PropTypes) {
   const { classes, cx } = useStyles();
   const stats: StatCardProps[] = [
     {
@@ -18,21 +19,9 @@ export function StatList({ count }: PropTypes) {
     },
     {
       icon: <Heart />,
-      statAmount: 25493,
+      statAmount: likes,
       secondaryStat: "#2 most likes",
       statTitle: "Total likes"
-    },
-    {
-      icon: <FilePencil />,
-      statAmount: 15006,
-      statTitle: "Average Word Count Per Blog",
-      secondaryStat: "#2 highest average word count"
-    },
-    {
-      icon: <TrendingUp />,
-      statAmount: 8387908,
-      secondaryStat: "#2 highest word count",
-      statTitle: "Total Word Count"
     }
   ];
 

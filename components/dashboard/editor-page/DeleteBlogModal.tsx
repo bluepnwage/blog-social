@@ -1,4 +1,4 @@
-import { Button, Card, Group, LoadingOverlay, Modal, Text, ThemeIcon } from "@mantine/core";
+import { Button, Group, LoadingOverlay, Modal, Text, ThemeIcon } from "@mantine/core";
 import { AlertTriangle } from "tabler-icons-react";
 import { useStyles } from "./styles";
 
@@ -13,8 +13,8 @@ export function DeleteBlogModal({ loading, onClose, onDelete, opened }: PropType
   const { classes } = useStyles();
   return (
     <>
-      <Modal classNames={{ header: classes.deleteBlogHeader }} opened={opened} onClose={onClose}>
-        <Card style={{ position: "relative" }}>
+      <Modal zIndex={305} classNames={{ header: classes.deleteBlogHeader }} opened={opened} onClose={onClose}>
+        <div style={{ position: "relative" }}>
           <LoadingOverlay visible={loading} />
           <Group mb={"md"}>
             <ThemeIcon color={"orange"} variant={"light"}>
@@ -33,7 +33,7 @@ export function DeleteBlogModal({ loading, onClose, onDelete, opened }: PropType
               Delete project
             </Button>
           </Group>
-        </Card>
+        </div>
       </Modal>
     </>
   );

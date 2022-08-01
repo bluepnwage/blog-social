@@ -39,7 +39,7 @@ export const useStyles = createStyles((theme) => ({
     top: 0,
     left: 0,
     transition: "all 250ms ease-out",
-    zIndex: 200
+    zIndex: 300
   },
   logo: {
     fontSize: theme.fontSizes.xl,

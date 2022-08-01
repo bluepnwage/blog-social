@@ -1,4 +1,4 @@
-import { Modal, Card, TextInput, Button, LoadingOverlay } from "@mantine/core";
+import { Modal, TextInput, Button, LoadingOverlay } from "@mantine/core";
 import { useState } from "react";
 import { useRouter } from "next/router";
 
@@ -36,8 +36,8 @@ export default function CreateBlogModal({ onClose, opened }: PropTypes) {
 
   return (
     <>
-      <Modal opened={opened} onClose={onClose} title="Create a new blog project">
-        <Card style={{ position: "relative" }}>
+      <Modal zIndex={305} opened={opened} onClose={onClose} title="Create a new blog project">
+        <div style={{ position: "relative" }}>
           <LoadingOverlay visible={loading} />
           <TextInput
             value={title}
@@ -48,7 +48,7 @@ export default function CreateBlogModal({ onClose, opened }: PropTypes) {
           <Button onClick={handleSubmit} disabled={!title}>
             Create new blog
           </Button>
-        </Card>
+        </div>
       </Modal>
     </>
   );

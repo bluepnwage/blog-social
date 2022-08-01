@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Card, Text, ActionIcon, Group, Stack, Modal, Button, LoadingOverlay, ThemeIcon } from "@mantine/core";
+import { Card, Text, ActionIcon, Group, Stack, } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Trash, FilePencil } from "tabler-icons-react";
 import { useStyles } from "./styles";

@@ -1,6 +1,6 @@
 import { Title } from "@mantine/core";
 import { Layout } from "@components/dashboard";
-import { UpdateProfile } from "@components/dashboard/profile-page/updateProfile/UpdateProfile";
+import { UpdateProfile } from "@components/dashboard/profile-page/UpdateProfile";
 import { withPageAuth, supabaseServerClient } from "@supabase/auth-helpers-nextjs";
 import { User } from "@interfaces/supabase";
 
