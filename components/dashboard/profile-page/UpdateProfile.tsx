@@ -1,10 +1,11 @@
 import { Card, Text, Avatar, Group, Stack, Divider, Button, LoadingOverlay, FileButton } from "@mantine/core";
 import { useStyles } from "./styles";
-import { BrandTwitter, ReportMoney, BrandHtml5, Location, BrandGithub } from "tabler-icons-react";
+import { BrandTwitter, ReportMoney, BrandHtml5, Location, BrandGithub, X, Check } from "tabler-icons-react";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import { FormEvent, useState, useEffect } from "react";
 import { User } from "@interfaces/supabase";
 import { Input } from "./Input";
+import { showNotification } from "@mantine/notifications";
 
 export function UpdateProfile({ id, avatar_url, ...form }: User) {
   const [profilePic, setProfilePic] = useState("");
@@ -14,7 +15,7 @@ export function UpdateProfile({ id, avatar_url, ...form }: User) {
   useEffect(() => {
     if (!avatar_url) return;
     downloadProfilePic();
-  }, []);
+  }, [avatar_url]);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -47,8 +48,15 @@ export function UpdateProfile({ id, avatar_url, ...form }: User) {
       if (error) {
         throw new Error(error.message);
       }
+      showNotification({
+        message: "Profile updated successfully",
+        color: "green",
+        autoClose: 3000,
+        title: "Success",
+        icon: <Check />
+      });
     } catch (error) {
-      alert(error.message);
+      showNotification({ message: error.message, color: "red", title: "Error", icon: <X /> });
     } finally {
       setLoading(false);
     }
@@ -69,11 +77,26 @@ export function UpdateProfile({ id, avatar_url, ...form }: User) {
       const { error: updateError } = await supabaseClient.from<User>("profiles").upsert({ avatar_url: data.Key, id });
       if (updateError) throw new Error(updateError.message);
       if (avatar_url) {
-        return await downloadProfilePic();
+        await downloadProfilePic();
+        showNotification({
+          message: "Profile picture successfully changed",
+          color: "green",
+          autoClose: 3000,
+          title: "Success",
+          icon: <Check />
+        });
+        return;
       }
       setProfilePic(URL.createObjectURL(file));
+      showNotification({
+        message: "Profile picture successfully changed",
+        color: "green",
+        autoClose: 3000,
+        title: "Success",
+        icon: <Check />
+      });
     } catch (error) {
-      alert(error.message);
+      showNotification({ message: error.message, color: "red", title: "Error", icon: <X /> });
     }
   };
 
@@ -94,7 +117,7 @@ export function UpdateProfile({ id, avatar_url, ...form }: User) {
       const url = URL.createObjectURL(data);
       setProfilePic(url);
     } catch (error) {
-      alert(error.message);
+      console.log(error.message);
     }
   };
 

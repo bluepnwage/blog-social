@@ -5,7 +5,8 @@ export const useStyles = createStyles((theme) => ({
   container: {
     flexDirection: "column",
     alignItems: "center",
-    width: "80%"
+    width: "80%",
+    marginBottom: theme.spacing.xl * 2
   },
 
   flex: {

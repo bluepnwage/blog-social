@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { Card, Text, ActionIcon, Group, Stack, } from "@mantine/core";
+import { Card, Text, ActionIcon, Group, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { Trash, FilePencil } from "tabler-icons-react";
+import { Trash, FilePencil, X, Check } from "tabler-icons-react";
 import { useStyles } from "./styles";
 import { Blog } from "@interfaces/supabase";
 import { formatDate } from "@util/formatDate";
 import { DeleteBlogModal } from "./DeleteBlogModal";
+import { showNotification } from "@mantine/notifications";
 
 interface PropTypes {
   blog: Blog;
@@ -30,11 +31,18 @@ export function BlogCard({ blog, onDelete }: PropTypes) {
       if (res.ok) {
         onDelete(blog.id);
         handler.close();
+        showNotification({
+          message: "Blog was successfully deleted",
+          title: "Success",
+          color: "green",
+          icon: <Check />,
+          autoClose: 3000
+        });
       } else {
         throw new Error("An error ocurred");
       }
     } catch (error) {
-      alert("An error ocurred");
+      showNotification({ message: error.message, title: "Failed to delete blog", icon: <X />, color: "red" });
     } finally {
       load.close();
     }

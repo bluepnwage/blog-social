@@ -1,13 +1,14 @@
 import { RichTextEditor } from "@mantine/rte";
 import { FormEvent, useState, useMemo, useEffect } from "react";
 import { Title, TextInput, Button, Stack, Textarea, Tabs, LoadingOverlay, SimpleGrid } from "@mantine/core";
-import { FilePencil, BrandHtml5 } from "tabler-icons-react";
+import { FilePencil, BrandHtml5, Check, X } from "tabler-icons-react";
 import { useStyles } from "./styles";
 import { ImageUpload } from "./ImageUpload";
 import { PreviewCard } from "./PreviewCard";
 import { ImagePreview } from "./ImagePreview";
 import { Blog } from "@interfaces/supabase";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
+import { showNotification } from "@mantine/notifications";
 
 interface Form {
   heading: string;
@@ -32,9 +33,9 @@ export default function EditorContainer({ blog, userID }: PropTypes) {
   const { classes, cx } = useStyles();
 
   useEffect(() => {
-    if(!blog.thumbnail) return
+    if (!blog.thumbnail) return;
     downloadImage();
-  }, []);
+  }, [blog.thumbnail]);
 
   const previewDisabled = !form.heading || !form.description || (files.length === 0 && !thumbnail);
   const buttonDisabled = !form.heading || !form.description || (files.length === 0 && !thumbnail) || !content;
@@ -51,6 +52,9 @@ export default function EditorContainer({ blog, userID }: PropTypes) {
     setLoading(true);
 
     try {
+      //Checks to see if there was a previous thumbnail and deletes it
+      await deletePrevThumbnail();
+
       const thumbnail = await uploadImage();
       const res = await fetch("/api/create-blog", {
         method: "PUT",
@@ -58,13 +62,12 @@ export default function EditorContainer({ blog, userID }: PropTypes) {
         body: JSON.stringify({ ...form, id: blog.id, content, thumbnail })
       });
       if (res.ok) {
-        const json = await res.json();
-        console.log(json);
+        showNotification({ message: "Blog saved successfully", title: "Success", color: "green", icon: <Check /> });
       } else {
         throw new Error("Something happened");
       }
     } catch (error) {
-      alert(error.message);
+      showNotification({ message: error.message, color: "red", icon: <X />, title: "An error ocurred" });
     } finally {
       setLoading(false);
     }
@@ -79,17 +82,37 @@ export default function EditorContainer({ blog, userID }: PropTypes) {
       const url = URL.createObjectURL(data);
       setThubmnail(url);
     } catch (error) {
-      alert(error.message);
+      showNotification({ color: "red", message: error.message, title: "An error ocurred", autoClose: 3000 });
     }
   };
 
   const uploadImage = async () => {
     const [file] = files;
     const filePath = `${userID}/thumbnails/${file.name}`;
-    console.log(filePath);
     const { data, error } = await supabaseClient.storage.from("img").upload(filePath, file, { contentType: file.type });
     if (error) throw new Error(error.message);
     return data.Key;
+  };
+
+  const deletePrevThumbnail = async () => {
+    //Getting the key for the thumbnail
+    const { data: blogData, error: blogError } = await supabaseClient
+      .from<Blog>("blogs")
+      .select("thumbnail")
+      .eq("author_id", userID)
+      .eq("id", blog.id)
+      .single();
+
+    if (blogError) return;
+    if (!blogData.thumbnail) return;
+
+    //Deleting the latest thumbnail
+    const filePath = `${blogData.thumbnail.slice(4)}`;
+    const { error } = await supabaseClient.storage.from("img").remove([filePath]);
+    if (error) {
+      console.log(error.message);
+      throw new Error(`Failed to delete: ${error.message}`);
+    }
   };
 
   const imageURL = useMemo(() => {
@@ -119,7 +142,7 @@ export default function EditorContainer({ blog, userID }: PropTypes) {
           </Tabs.List>
           <Tabs.Panel pt={"md"} value="editor">
             <Stack style={{ position: "relative" }}>
-              <LoadingOverlay visible={loading} />
+              <LoadingOverlay zIndex={250} visible={loading} />
               <TextInput
                 onChange={handleChange}
                 name={"heading"}

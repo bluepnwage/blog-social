@@ -1,6 +1,8 @@
 import { Modal, TextInput, Button, LoadingOverlay } from "@mantine/core";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { showNotification } from "@mantine/notifications";
+import { X } from "tabler-icons-react";
 
 interface PropTypes {
   opened: boolean;
@@ -22,12 +24,11 @@ export default function CreateBlogModal({ onClose, opened }: PropTypes) {
       });
       if (res.ok) {
         const json = await res.json();
-        console.log(json);
         router.push(`/dashboard/bluepnwage/editor/${json.id}`);
       }
     } catch (error) {
       if (error instanceof Error) {
-        alert(error.message);
+        showNotification({ message: error.message, title: "Failed to create blog", color: "red", icon: <X /> });
       }
     } finally {
       setLoading(false);
