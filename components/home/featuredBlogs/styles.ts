@@ -1,5 +1,5 @@
 import { createStyles } from "@mantine/core";
-
+import { checkTheme } from "@util/theme";
 export const useStyles = createStyles((theme) => ({
   imageContainer: {
     aspectRatio: "16 / 9",
@@ -19,5 +19,8 @@ export const useStyles = createStyles((theme) => ({
   },
   container: {
     marginBottom: theme.spacing.xl * 2.5
+  },
+  dimmedText: {
+    color: checkTheme(theme, theme.colors.gray[7], theme.colors.dark[2])
   }
 }));

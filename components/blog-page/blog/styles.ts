@@ -1,4 +1,5 @@
 import { createStyles } from "@mantine/core";
+import { checkTheme } from "@util/theme";
 
 export const useStyles = createStyles((theme) => ({
   container: {
@@ -30,5 +31,8 @@ export const useStyles = createStyles((theme) => ({
       alignItems: "center",
       textAlign: "center"
     }
+  },
+  dimmedText: {
+    color: checkTheme(theme, theme.colors.gray[7], theme.colors.dark[2])
   }
 }));

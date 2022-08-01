@@ -22,7 +22,7 @@ export function FeaturedBlog() {
         <div className={classes.descriptionContainer}>
           <Text component="strong">
             Travel —{" "}
-            <Text weight={400} color={"dimmed"} component={"time"}>
+            <Text weight={400} className={classes.dimmedText} component={"time"}>
               Jul 21, 2022
             </Text>
           </Text>
@@ -51,7 +51,7 @@ export function FeaturedBlog() {
                 />
                 <Stack spacing={5}>
                   <Text component="strong">Agis Carty</Text>
-                  <Text component="span" color={"dimmed"}>
+                  <Text component="span" className={classes.dimmedText}>
                     Front-end Developer
                   </Text>
                 </Stack>

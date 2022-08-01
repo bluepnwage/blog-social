@@ -8,6 +8,14 @@ body {
   position: relative;
 }
 
+.light-mode {
+  color-scheme: light;
+}
+
+.dark-mode {
+  color-scheme: dark;
+}
+
 .section-container {
   display: flex;
   flex-direction: column;

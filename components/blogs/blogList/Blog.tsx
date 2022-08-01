@@ -21,7 +21,7 @@ export function Blog() {
         </Card.Section>
         <Text component="strong">
           Travel —{" "}
-          <Text component="time" weight={400} color={"dimmed"}>
+          <Text component="time" weight={400} className={classes.dimmedText}>
             Jul 21, 2022
           </Text>
         </Text>
@@ -50,7 +50,7 @@ export function Blog() {
                 <Text size="sm" component="strong">
                   Agis Carty
                 </Text>
-                <Text size="sm" component="span" color={"dimmed"}>
+                <Text size="sm" component="span" className={classes.dimmedText}>
                   Front-end Developer
                 </Text>
               </Stack>

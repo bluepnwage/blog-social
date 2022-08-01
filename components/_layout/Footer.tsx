@@ -1,5 +1,5 @@
 import { Container, Group, ActionIcon, Image, Text } from "@mantine/core";
-import { BrandTwitter, BrandYoutube, BrandGithub } from "tabler-icons-react";
+import { BrandTwitter, BrandLinkedin, BrandGithub } from "tabler-icons-react";
 import { useStyles } from "./styles";
 import { memo } from "react";
 
@@ -14,13 +14,13 @@ function Footer() {
           <Text weight={600}>Blog Social</Text>
         </Group>
         <Group spacing={0} className={classes.links} position="right" noWrap>
-          <ActionIcon size="lg">
+          <ActionIcon aria-label="View profile on Twitter" size="lg">
             <BrandTwitter size={18} />
           </ActionIcon>
-          <ActionIcon size="lg">
-            <BrandYoutube size={18} />
+          <ActionIcon aria-label="View profile on LinkedIn" size="lg">
+            <BrandLinkedin size={18} />
           </ActionIcon>
-          <ActionIcon size="lg">
+          <ActionIcon aria-label="View profile on Github" size="lg">
             <BrandGithub size={18} />
           </ActionIcon>
         </Group>

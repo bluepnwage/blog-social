@@ -9,11 +9,11 @@ export default function BlogStats() {
     <>
       <Group mb={theme.spacing.xl * 2.5} position="apart" className={classes.container}>
         <Indicator color={"red"} size={16} inline label={formatNum(652358)}>
-          <ActionIcon color={"red"}>
+          <ActionIcon title="Total likes" color={"red"}>
             <HeartPlus />
           </ActionIcon>
         </Indicator>
-        <ActionIcon>
+        <ActionIcon title="Share this blog">
           <Share />
         </ActionIcon>
       </Group>

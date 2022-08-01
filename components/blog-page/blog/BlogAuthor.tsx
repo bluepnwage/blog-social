@@ -23,7 +23,7 @@ export function BlogAuthor() {
                 />
                 <Stack spacing={0}>
                   <Text component="strong">Agis Carty</Text>
-                  <Text component="span" color={"dimmed"}>
+                  <Text component="span" className={classes.dimmedText}>
                     <Text component="time">Jul 21, 2022</Text> — 2 min read
                   </Text>
                 </Stack>
@@ -31,16 +31,16 @@ export function BlogAuthor() {
             </ProfileModal>
           </Suspense>
           <Group>
-            <ActionIcon>
+            <ActionIcon title="Share on twitter">
               <BrandTwitter />
             </ActionIcon>
-            <ActionIcon>
+            <ActionIcon title="Share on facebook">
               <BrandFacebook />
             </ActionIcon>
-            <ActionIcon>
+            <ActionIcon title="Copy link">
               <Share />
             </ActionIcon>
-            <ActionIcon color={"red"}>
+            <ActionIcon title="Like this blog" color={"red"}>
               <HeartPlus />
             </ActionIcon>
           </Group>

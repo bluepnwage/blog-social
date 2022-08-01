@@ -16,5 +16,8 @@ export const useStyles = createStyles((theme) => ({
     rowGap: theme.spacing.xl * 2.5,
     columnGap: theme.spacing.xl,
     marginBottom: theme.spacing.xl * 2.5
+  },
+  dimmedText: {
+    color: checkTheme(theme, theme.colors.gray[7], theme.colors.dark[2])
   }
 }));
