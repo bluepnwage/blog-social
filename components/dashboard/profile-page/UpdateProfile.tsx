@@ -6,6 +6,7 @@ import { FormEvent, useState, useEffect } from "react";
 import { User } from "@interfaces/supabase";
 import { Input } from "./Input";
 import { showNotification } from "@mantine/notifications";
+import { mutate } from "swr";
 
 export function UpdateProfile({ id, avatar_url, ...form }: User) {
   const [profilePic, setProfilePic] = useState("");
@@ -85,6 +86,7 @@ export function UpdateProfile({ id, avatar_url, ...form }: User) {
           title: "Success",
           icon: <Check />
         });
+        mutate("/avatar");
         return;
       }
       setProfilePic(URL.createObjectURL(file));
@@ -95,6 +97,7 @@ export function UpdateProfile({ id, avatar_url, ...form }: User) {
         title: "Success",
         icon: <Check />
       });
+      mutate("/avatar");
     } catch (error) {
       showNotification({ message: error.message, color: "red", title: "Error", icon: <X /> });
     }
