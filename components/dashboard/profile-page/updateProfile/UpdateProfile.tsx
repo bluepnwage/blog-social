@@ -4,17 +4,17 @@ import {
   Avatar,
   TextInput,
   Group,
-  NumberInput,
   Stack,
   Divider,
   Textarea,
   Button,
-  LoadingOverlay
+  LoadingOverlay,
+  FileButton
 } from "@mantine/core";
 import { useStyles } from "./styles";
 import { BrandTwitter, ReportMoney, BrandHtml5, At, Location, BrandGithub } from "tabler-icons-react";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { User } from "@interfaces/supabase";
 
 interface Form {
@@ -29,12 +29,18 @@ interface Form {
   occupation: string;
 }
 
-export function UpdateProfile({ id, ...formProps }: User) {
+export function UpdateProfile({ id, avatar_url, ...formProps }: User) {
   const [form, setForm] = useState<Form>({
     ...formProps
   });
+  const [profilePic, setProfilePic] = useState("");
   const [loading, setLoading] = useState(false);
   const { classes, cx } = useStyles();
+
+  useEffect(() => {
+    if (!avatar_url) return;
+    downloadProfilePic();
+  }, []);
 
   async function updateProfile() {
     const { bio, city, country, first_name, github, last_name, twitter, website, occupation } = form;
@@ -54,7 +60,7 @@ export function UpdateProfile({ id, ...formProps }: User) {
         updated_at: new Date()
       };
 
-      let { error } = await supabaseClient.from("profiles").upsert(updates, {
+      let { error } = await supabaseClient.from<User>("profiles").upsert(updates, {
         returning: "minimal" // Don't return the value after inserting
       });
 
@@ -67,6 +73,67 @@ export function UpdateProfile({ id, ...formProps }: User) {
       setLoading(false);
     }
   }
+
+  const updatePicture = async (file: File) => {
+    try {
+      //Specifying the path for the image and uploading it
+      const filePath = `${id}/avatar/${file.name}`;
+      const { data, error } = await supabaseClient.storage.from("img").upload(filePath, file);
+      if (error) throw new Error(error.message);
+
+      //If there was a previous profile picture then delete it
+      if (profilePic) await deletePrevProfilePic();
+
+      //Updating the avatar url in the database record to match the file that was just uploaded
+      const { error: updateError } = await supabaseClient.from<User>("profiles").upsert({ avatar_url: data.Key, id });
+      if (updateError) throw new Error(updateError.message);
+      if (avatar_url) {
+        return await downloadProfilePic();
+      }
+      setProfilePic(URL.createObjectURL(file));
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const downloadProfilePic = async () => {
+    try {
+      //Getting the key for the latest avatar url
+      const { data: userData, error: userError } = await supabaseClient
+        .from<User>("profiles")
+        .select("avatar_url")
+        .single();
+      if (userError) throw new Error(userError.message);
+      const filePath = `${userData.avatar_url.slice(4)}`;
+
+      //Downloading the image based on the latest key
+      const { data, error } = await supabaseClient.storage.from("img").download(filePath);
+      if (error) throw new Error(error.message);
+
+      const url = URL.createObjectURL(data);
+      setProfilePic(url);
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const deletePrevProfilePic = async () => {
+    //Getting the key for the latest avatar
+    const { data: userData, error: userError } = await supabaseClient
+      .from<User>("profiles")
+      .select("avatar_url")
+      .single();
+
+    if (userError) throw new Error(userError.message);
+
+    //Deleting the latest avatar url
+    const filePath = `${userData.avatar_url.slice(4)}`;
+    const { error } = await supabaseClient.storage.from("img").remove([filePath]);
+    if (error) {
+      console.log(error.message);
+      throw new Error(`Failed to delete: ${error.message}`);
+    }
+  };
 
   const handleChange = (e: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.currentTarget;
@@ -83,13 +150,19 @@ export function UpdateProfile({ id, ...formProps }: User) {
         <Text mb={"md"} weight={200}>
           USER INFORMATION
         </Text>
-        <Avatar
-          mb={"md"}
-          alt={"Profile picture"}
-          imageProps={{ loading: "lazy" }}
-          src={"/bluepnwage.jpg"}
-          style={{ width: 90, height: 90, borderRadius: "50%" }}
-        />
+        <Stack mb={"md"} style={{ width: "fit-content" }} spacing={0}>
+          <Avatar
+            mb={"md"}
+            alt={"Profile picture"}
+            imageProps={{ loading: "lazy" }}
+            src={profilePic}
+            style={{ width: 90, height: 90, borderRadius: "50%" }}
+          />
+
+          <FileButton onChange={updatePicture} accept="image/png,image/jpeg">
+            {(props) => <Button {...props}>Upload image</Button>}
+          </FileButton>
+        </Stack>
         <Stack mb={"lg"}>
           <Group grow>
             <TextInput

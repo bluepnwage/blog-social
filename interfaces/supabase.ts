@@ -15,7 +15,7 @@ export interface Blog {
 export interface User {
   username: string;
   id: string;
-  updated_at: string;
+  updated_at: string | Date;
   avatar_url: string;
   website: string;
   twitter: string;

@@ -25,5 +25,8 @@ export const useStyles = createStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "space-between",
     minHeight: 250
+  },
+  deleteBlogHeader: {
+    margin: 0
   }
 }));

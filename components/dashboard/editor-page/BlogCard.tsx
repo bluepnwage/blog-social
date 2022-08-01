@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { Card, Text, ActionIcon, Group, Stack, Modal, Button, LoadingOverlay } from "@mantine/core";
+import { Card, Text, ActionIcon, Group, Stack, Modal, Button, LoadingOverlay, ThemeIcon } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Trash, FilePencil } from "tabler-icons-react";
 import { useStyles } from "./styles";
 import { Blog } from "@interfaces/supabase";
 import { formatDate } from "@util/formatDate";
+import { DeleteBlogModal } from "./DeleteBlogModal";
 
 interface PropTypes {
   blog: Blog;
@@ -18,7 +19,7 @@ export function BlogCard({ blog, onDelete }: PropTypes) {
 
   const date = new Date(blog.created_at);
 
-  const handleClick = async () => {
+  const deleteBlog = async () => {
     load.open();
     try {
       const res = await fetch("/api/create-blog", {
@@ -41,19 +42,7 @@ export function BlogCard({ blog, onDelete }: PropTypes) {
 
   return (
     <>
-      <Modal title="Caution" opened={opened} onClose={handler.close}>
-        <Card style={{ position: "relative" }}>
-          <LoadingOverlay visible={loading} />
-          <Text mb={"md"}>Are you sure you want to delete? This action is irreversible</Text>
-          <Group>
-            <Button onClick={handler.close}>Keep project</Button>
-            <Button variant="light" onClick={handleClick} color={"red"}>
-              Delete project
-            </Button>
-          </Group>
-        </Card>
-      </Modal>
-
+      <DeleteBlogModal loading={loading} onClose={handler.close} onDelete={deleteBlog} opened={opened} />
       <Card className={cx(classes.blogCard, classes.flex)}>
         <Group position="apart">
           <Stack spacing={0}>
