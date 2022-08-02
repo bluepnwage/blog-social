@@ -8,7 +8,7 @@ export interface Blog {
   thumbnail: string;
   updated_at: string;
   author_id: string;
-  published: string;
+  published: boolean;
   slug: string;
   likes: number;
 }

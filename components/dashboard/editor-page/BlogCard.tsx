@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Card, Text, ActionIcon, Group, Stack } from "@mantine/core";
+import { Card, Text, ActionIcon, Group, Stack, Button, Badge } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { Trash, FilePencil, X, Check } from "tabler-icons-react";
+import { Trash, X, Check } from "tabler-icons-react";
 import { useStyles } from "./styles";
 import { Blog } from "@interfaces/supabase";
 import { formatDate } from "@util/formatDate";
@@ -17,6 +17,7 @@ export function BlogCard({ blog, onDelete }: PropTypes) {
   const { classes, cx } = useStyles();
   const [opened, handler] = useDisclosure(false);
   const [loading, load] = useDisclosure(false);
+  const [published, publish] = useDisclosure(blog.published);
 
   const date = new Date(blog.created_at);
 
@@ -48,35 +49,65 @@ export function BlogCard({ blog, onDelete }: PropTypes) {
     }
   };
 
+  const toggleBlog = async () => {
+    try {
+      const res = await fetch("/api/publish-blog", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: blog.id, published: published ? false : true })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        console.log(json);
+        publish.toggle();
+        showNotification({ message: json.message, color: "green", title: "Success" });
+        load.close();
+      } else {
+        const json = await res.json();
+        throw new Error(json.message);
+      }
+    } catch (error) {
+      showNotification({ message: error.message, color: "red", title: "Error" });
+    }
+  };
+
+  const status = published ? "Published" : "Unpublished";
+  const color = published ? "green" : "orange";
+
   return (
     <>
       <DeleteBlogModal loading={loading} onClose={handler.close} onDelete={deleteBlog} opened={opened} />
       <Card className={cx(classes.blogCard, classes.flex)}>
-        <Group position="apart">
-          <Stack spacing={0}>
+        <Stack spacing={0}>
+          <Group position="apart">
             <Text component="strong">{blog.title}</Text>
-            <Text component="span" color={"dimmed"}>
-              Blog id: {blog.id}
-            </Text>
-          </Stack>
-          <ActionIcon
-            component="button"
-            onClick={handler.open}
-            variant="light"
-            aria-label="Delete blog"
-            size={"lg"}
-            radius={"xl"}
-            color={"red"}
-          >
-            <Trash />
-          </ActionIcon>
+            <ActionIcon
+              component="button"
+              onClick={handler.open}
+              variant="light"
+              aria-label="Delete blog"
+              size={"lg"}
+              radius={"xl"}
+              color={"red"}
+            >
+              <Trash />
+            </ActionIcon>
+          </Group>
+          <Badge mt={"xs"} style={{ width: "fit-content" }} color={color}>
+            {status}
+          </Badge>
+        </Stack>
+        <Group position="center">
+          <Link href={`/dashboard/bluepnwage/editor/${blog.id}`} passHref>
+            <Button size="lg" radius={"xl"} variant={"light"} component="a">
+              Edit blog
+            </Button>
+          </Link>
         </Group>
         <Group position="apart">
-          <Link href={`/dashboard/bluepnwage/editor/${blog.id}`} passHref>
-            <ActionIcon component="a" color={"blue"} variant="light" size={"lg"} radius={"xl"}>
-              <FilePencil />
-            </ActionIcon>
-          </Link>
+          <Button onClick={toggleBlog} size="sm" variant="light" color={published ? "orange" : "green"}>
+            {published ? "Unpublish" : "Publish"}
+          </Button>
           <Text component="time">{formatDate(date)}</Text>
         </Group>
       </Card>

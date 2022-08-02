@@ -1,10 +1,6 @@
 import { createStyles } from "@mantine/core";
 
 export const useStyles = createStyles((theme) => ({
-  container: {
-    flexDirection: "column",
-    alignItems: "center"
-  },
   input: {
     width: "25%"
   },
@@ -19,12 +15,12 @@ export const useStyles = createStyles((theme) => ({
     minHeight: 250
   },
   grid: {
-    width: "90%"
+    marginBottom: theme.spacing.xl * 2
   },
   blogCard: {
     flexDirection: "column",
     justifyContent: "space-between",
-    minHeight: 250
+    minHeight: 275
   },
   deleteBlogHeader: {
     margin: 0

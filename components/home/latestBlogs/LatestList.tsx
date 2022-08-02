@@ -9,7 +9,7 @@ export function LatestBlogs() {
     <>
       <section className={cx("section-container", classes.sectionContainer)}>
         <header className="container">
-          <Title order={1} mb={"lg"}>
+          <Title order={2} mb={"lg"}>
             Latest blogs
           </Title>
         </header>
