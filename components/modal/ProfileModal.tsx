@@ -8,7 +8,7 @@ import { User } from "@interfaces/supabase";
 interface PropTypes {
   children: ReactNode;
   user?: User;
-  avatar: string;
+  avatar?: string;
 }
 
 function ProfileModal({ children, user, avatar }: PropTypes) {
