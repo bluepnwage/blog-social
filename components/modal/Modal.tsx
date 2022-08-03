@@ -2,26 +2,25 @@ import { Avatar, Card, Text, ActionIcon, Group, Stack, Anchor, Divider } from "@
 import { BrandTwitch, BrandTwitter, BrandLinkedin, X } from "tabler-icons-react";
 import { useClickOutside } from "@mantine/hooks";
 import { useStyles } from "./styles";
+import { User } from "@interfaces/supabase";
 
 interface PropTypes {
   onClose: () => void;
   styles: any;
+  user: User;
+  avatar: string;
 }
 
-export function Modal({ onClose, styles }: PropTypes) {
+export function Modal({ onClose, styles, user, avatar }: PropTypes) {
   const ref = useClickOutside(onClose);
   const { classes, cx } = useStyles();
   return (
     <Card style={styles.modal} ref={ref} p={0} className={cx(classes.flex, classes.card)}>
       <div className={cx(classes.gradientContainer, classes.flex)}>
-        <Avatar
-          size={"xl"}
-          radius={50}
-          src={"/bluepnwage.jpg"}
-          imageProps={{ loading: "lazy" }}
-          alt={"User profile picture"}
-        />
-        <Text size={"xl"}>Agis Carty</Text>
+        <Avatar size={"xl"} radius={50} src={avatar} imageProps={{ loading: "lazy" }} alt={"User profile picture"} />
+        <Text size={"xl"}>
+          {user.first_name} {user.last_name}
+        </Text>
         <Group>
           <ActionIcon className={classes.icon}>
             <BrandTwitter />
@@ -46,23 +45,19 @@ export function Modal({ onClose, styles }: PropTypes) {
         </Stack>
         <Stack spacing={"xs"}>
           <Text component="strong">Personal website</Text>
-          <Anchor
-            title={"Link to portfolio website"}
-            href={"https://portfolio-bluepnwage.vercel.app/"}
-            target={"_blank"}
-          >
-            https://portfolio-bluepnwage.vercel.app/
+          <Anchor title={"Link to portfolio website"} href={user.website} target={"_blank"}>
+            {user.website}
           </Anchor>
         </Stack>
         <Stack>
           <Group position="apart">
             <Stack spacing={"xs"}>
               <Text component="strong">Country</Text>
-              <Text>Saint Martin</Text>
+              <Text>{user.country}</Text>
             </Stack>
             <Stack spacing={"xs"}>
               <Text component="strong">City</Text>
-              <Text>Marigot</Text>
+              <Text>{user.city}</Text>
             </Stack>
           </Group>
         </Stack>

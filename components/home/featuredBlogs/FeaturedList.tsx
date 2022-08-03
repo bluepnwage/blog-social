@@ -1,18 +1,16 @@
 import { Title, Pagination } from "@mantine/core";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useStyles } from "./styles";
 import { FeaturedBlog } from "./FeaturedBlog";
+import { Blog } from "@interfaces/supabase";
 
-export function FeaturedList() {
+interface PropTypes {
+  blogs: Blog[];
+}
+
+export function FeaturedList({ blogs }: PropTypes) {
   const { classes, cx } = useStyles();
   const [activePage, setActivePage] = useState(1);
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     togglePage();
-  //   }, 5000);
-  //   return () => clearInterval(interval);
-  // }, []);
 
   const togglePage = (num?: number) => {
     if (num) return setActivePage(num);
@@ -27,7 +25,9 @@ export function FeaturedList() {
             Most Popular Blogs
           </Title>
         </header>
-        <FeaturedBlog />
+        {blogs.map((blog) => {
+          return <FeaturedBlog blog={blog} key={blog.id} />;
+        })}
         <div>
           <Pagination radius={"xl"} withControls={false} mt={48} onChange={togglePage} page={activePage} total={3} />
         </div>
