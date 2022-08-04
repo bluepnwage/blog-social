@@ -19,20 +19,20 @@ export default function Home({ featuredBlogs, latestBlogs }: PropTypes) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { data, error } = await supabaseClient
+  const { data: featuredBlogs } = await supabaseClient
     .from<Blog>("blogs")
     .select("*")
     .eq("published", true)
     .order("likes", { ascending: false })
     .limit(1);
-  const { data: latestBlogs, error: latestError } = await supabaseClient
+  const { data: latestBlogs } = await supabaseClient
     .from<Blog>("blogs")
     .select("*")
     .eq("published", true)
     .order("created_at", { ascending: false });
   return {
     props: {
-      featuredBlogs: data,
+      featuredBlogs,
       latestBlogs
     }
   };

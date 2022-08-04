@@ -51,7 +51,7 @@ export function LatestBlog({ blog }: PropTypes) {
               <Skeleton visible={userLoading} width={"fit-content"} radius={"xl"}>
                 <Avatar
                   imageProps={{ loading: "lazy" }}
-                  src={user.avatar_url || ""}
+                  src={user?.avatar_url || ""}
                   radius={"xl"}
                   size={"md"}
                   alt={"Profile picture for author"}
