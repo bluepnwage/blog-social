@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Menu from "./Menu";
-import { Image, Anchor, Group, Text, Button } from "@mantine/core";
+import { Image, Anchor, Group, Text, Button, Skeleton } from "@mantine/core";
 import { useStyles } from "./styles";
 import { useUser } from "@supabase/auth-helpers-react";
 import { Suspense } from "react";
@@ -36,7 +36,7 @@ export default function Header() {
                 </Button>
               </Link>
             )}
-            <Suspense fallback={<p>Loading...</p>}>{user && <Menu />}</Suspense>
+            <Suspense fallback={<Skeleton circle height={48} />}>{user && <Menu userID={user.id} />}</Suspense>
           </Group>
         </nav>
       </header>

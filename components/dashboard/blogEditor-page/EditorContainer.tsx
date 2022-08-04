@@ -1,5 +1,5 @@
 import { RichTextEditor } from "@mantine/rte";
-import { FormEvent, useState, useMemo, useEffect } from "react";
+import { FormEvent, useState, useMemo } from "react";
 import { Title, TextInput, Button, Stack, Textarea, Tabs, LoadingOverlay, SimpleGrid } from "@mantine/core";
 import { FilePencil, BrandHtml5, Check, X } from "tabler-icons-react";
 import { useStyles } from "./styles";
@@ -7,8 +7,8 @@ import { ImageUpload } from "./ImageUpload";
 import { PreviewCard } from "./PreviewCard";
 import { ImagePreview } from "./ImagePreview";
 import { Blog } from "@interfaces/supabase";
-import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import { showNotification } from "@mantine/notifications";
+import { CloudinaryResponse } from "@interfaces/cloudinary";
 
 interface Form {
   heading: string;
@@ -20,7 +20,7 @@ interface PropTypes {
   userID: string;
 }
 
-export default function EditorContainer({ blog, userID }: PropTypes) {
+export default function EditorContainer({ blog }: PropTypes) {
   const [form, setForm] = useState<Form>({
     heading: blog.heading,
     description: blog.description
@@ -28,14 +28,9 @@ export default function EditorContainer({ blog, userID }: PropTypes) {
   const [content, setContent] = useState(blog.content);
   const [files, setFile] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
-  const [thumbnail, setThubmnail] = useState("");
+  const [thumbnail, setThubmnail] = useState(blog.thumbnail);
 
   const { classes, cx } = useStyles();
-
-  useEffect(() => {
-    if (!blog.thumbnail) return;
-    downloadImage();
-  }, [blog.thumbnail]);
 
   const previewDisabled = !form.heading || !form.description || (files.length === 0 && !thumbnail);
   const buttonDisabled = !form.heading || !form.description || (files.length === 0 && !thumbnail) || !content;
@@ -53,16 +48,18 @@ export default function EditorContainer({ blog, userID }: PropTypes) {
 
     try {
       //Checks to see if there was a previous thumbnail and deletes it
-      await deletePrevThumbnail();
+      if (thumbnail) await deletePrevThumbnail();
+      const { secure_url } = await uploadImage();
 
-      const thumbnail = files.length === 0 ? blog.thumbnail : await uploadImage();
       const res = await fetch("/api/create-blog", {
         method: "PUT",
         headers: { "Content-Type": "application" },
-        body: JSON.stringify({ ...form, id: blog.id, content, thumbnail })
+        body: JSON.stringify({ ...form, id: blog.id, content, thumbnail: secure_url })
       });
+
       if (res.ok) {
         showNotification({ message: "Blog saved successfully", title: "Success", color: "green", icon: <Check /> });
+        setThubmnail(secure_url);
       } else {
         throw new Error("Something happened");
       }
@@ -73,46 +70,29 @@ export default function EditorContainer({ blog, userID }: PropTypes) {
     }
   };
 
-  const downloadImage = async () => {
-    try {
-      const thumbnailKey = blog.thumbnail.slice(4);
-      const { data, error } = await supabaseClient.storage.from("img").download(thumbnailKey);
-      console.log(thumbnailKey);
-      if (error) throw new Error(error.message);
-      const url = URL.createObjectURL(data);
-      setThubmnail(url);
-    } catch (error) {
-      showNotification({ color: "red", message: error.message, title: "An error ocurred", autoClose: 3000 });
-    }
-  };
-
   const uploadImage = async () => {
     const [file] = files;
-    const filePath = `${userID}/thumbnails/${file.name}`;
-    const { data, error } = await supabaseClient.storage.from("img").upload(filePath, file, { contentType: file.type });
-    if (error) throw new Error(error.message);
-    return data.Key;
+    const url = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`;
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_PRESET);
+    const res = await fetch(url, {
+      method: "POST",
+      body: formData
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data as CloudinaryResponse;
+    }
+    throw new Error("Failed to upload image");
   };
 
   const deletePrevThumbnail = async () => {
-    //Getting the key for the thumbnail
-    const { data: blogData, error: blogError } = await supabaseClient
-      .from<Blog>("blogs")
-      .select("thumbnail")
-      .eq("author_id", userID)
-      .eq("id", blog.id)
-      .single();
-
-    if (blogError) return;
-    if (!blogData.thumbnail) return;
-
-    //Deleting the latest thumbnail
-    const filePath = `${blogData.thumbnail.slice(4)}`;
-    const { error } = await supabaseClient.storage.from("img").remove([filePath]);
-    if (error) {
-      console.log(error.message);
-      throw new Error(`Failed to delete: ${error.message}`);
-    }
+    await fetch("/api/delete-image", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: thumbnail })
+    });
   };
 
   const imageURL = useMemo(() => {

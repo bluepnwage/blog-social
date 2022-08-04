@@ -2,21 +2,17 @@ import { Card, Text, Avatar, Group, Stack, Divider, Button, LoadingOverlay, File
 import { useStyles } from "./styles";
 import { BrandTwitter, ReportMoney, BrandHtml5, Location, BrandGithub, X, Check } from "tabler-icons-react";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent, useState } from "react";
 import { User } from "@interfaces/supabase";
 import { Input } from "./Input";
 import { showNotification } from "@mantine/notifications";
 import { mutate } from "swr";
+import { CloudinaryResponse } from "@interfaces/cloudinary";
 
 export function UpdateProfile({ id, avatar_url, ...form }: User) {
-  const [profilePic, setProfilePic] = useState("");
   const [loading, setLoading] = useState(false);
+  const [avatar, setAvatar] = useState(avatar_url);
   const { classes, cx } = useStyles();
-
-  useEffect(() => {
-    if (!avatar_url) return;
-    downloadProfilePic();
-  }, [avatar_url]);
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -66,80 +62,43 @@ export function UpdateProfile({ id, avatar_url, ...form }: User) {
   const updatePicture = async (file: File) => {
     if (!file) return;
     try {
-      //Specifying the path for the image and uploading it
-      const filePath = `${id}/avatar/${file.name}`;
-      const { data, error } = await supabaseClient.storage.from("img").upload(filePath, file);
-      if (error) throw new Error(error.message);
+      const formData = new FormData();
+      const url = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`;
 
-      //If there was a previous profile picture then delete it
-      if (profilePic) await deletePrevProfilePic();
+      formData.append("file", file);
+      formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_PRESET);
 
-      //Updating the avatar url in the database record to match the file that was just uploaded
-      const { error: updateError } = await supabaseClient.from<User>("profiles").upsert({ avatar_url: data.Key, id });
-      if (updateError) throw new Error(updateError.message);
-      if (avatar_url) {
-        await downloadProfilePic();
-        showNotification({
-          message: "Profile picture successfully changed",
-          color: "green",
-          autoClose: 3000,
-          title: "Success",
-          icon: <Check />
-        });
-        mutate("/avatar");
-        return;
-      }
-      setProfilePic(URL.createObjectURL(file));
-      showNotification({
-        message: "Profile picture successfully changed",
-        color: "green",
-        autoClose: 3000,
-        title: "Success",
-        icon: <Check />
+      const res = await fetch(url, {
+        method: "POST",
+        body: formData
       });
-      mutate("/avatar");
+
+      if (res.ok) {
+        const json = (await res.json()) as CloudinaryResponse;
+        const { error: updateError } = await supabaseClient
+          .from<User>("profiles")
+          .upsert({ avatar_url: json.secure_url, id });
+
+        if (updateError) throw updateError;
+        if (avatar) await deletePrevAvatar();
+
+        setAvatar(json.secure_url);
+        mutate(id);
+        showNotification({ message: "Profile picture updated", color: "green", title: "Success" });
+      } else {
+        throw new Error("Failed to upload image");
+      }
     } catch (error) {
       showNotification({ message: error.message, color: "red", title: "Error", icon: <X /> });
     }
   };
 
-  const downloadProfilePic = async () => {
-    try {
-      //Getting the key for the latest avatar url
-      const { data: userData, error: userError } = await supabaseClient
-        .from<User>("profiles")
-        .select("avatar_url")
-        .single();
-      if (userError) throw new Error(userError.message);
-      const filePath = `${userData.avatar_url.slice(4)}`;
-
-      //Downloading the image based on the latest key
-      const { data, error } = await supabaseClient.storage.from("img").download(filePath);
-      if (error) throw new Error(error.message);
-
-      const url = URL.createObjectURL(data);
-      setProfilePic(url);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
-  const deletePrevProfilePic = async () => {
-    //Getting the key for the latest avatar
-    const { data: userData, error: userError } = await supabaseClient
-      .from<User>("profiles")
-      .select("avatar_url")
-      .single();
-
-    if (userError) throw new Error(userError.message);
-
-    //Deleting the latest avatar url
-    const filePath = `${userData.avatar_url.slice(4)}`;
-    const { error } = await supabaseClient.storage.from("img").remove([filePath]);
-    if (error) {
-      console.log(error.message);
-      throw new Error(`Failed to delete: ${error.message}`);
-    }
+  const deletePrevAvatar = async () => {
+    await fetch("/api/delete-image", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url: avatar })
+    });
   };
 
   return (
@@ -157,7 +116,7 @@ export function UpdateProfile({ id, avatar_url, ...form }: User) {
             mb={"md"}
             alt={"Profile picture"}
             imageProps={{ loading: "lazy" }}
-            src={profilePic}
+            src={avatar}
             className={classes.profilePicture}
           />
 

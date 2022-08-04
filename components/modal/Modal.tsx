@@ -8,18 +8,23 @@ interface PropTypes {
   onClose: () => void;
   styles: any;
   user: User;
-  avatar: string;
 }
 
-export function Modal({ onClose, styles, user, avatar }: PropTypes) {
+export function Modal({ onClose, styles, user }: PropTypes) {
   const ref = useClickOutside(onClose);
   const { classes, cx } = useStyles();
   return (
     <Card style={styles.modal} ref={ref} p={0} className={cx(classes.flex, classes.card)}>
       <div className={cx(classes.gradientContainer, classes.flex)}>
-        <Avatar size={"xl"} radius={50} src={avatar} imageProps={{ loading: "lazy" }} alt={"User profile picture"} />
+        <Avatar
+          size={"xl"}
+          radius={50}
+          src={user?.avatar_url}
+          imageProps={{ loading: "lazy" }}
+          alt={"User profile picture"}
+        />
         <Text size={"xl"}>
-          {user.first_name} {user.last_name}
+          {user?.first_name} {user?.last_name}
         </Text>
         <Group>
           <ActionIcon className={classes.icon}>
@@ -45,19 +50,19 @@ export function Modal({ onClose, styles, user, avatar }: PropTypes) {
         </Stack>
         <Stack spacing={"xs"}>
           <Text component="strong">Personal website</Text>
-          <Anchor title={"Link to portfolio website"} href={user.website} target={"_blank"}>
-            {user.website}
+          <Anchor title={"Link to portfolio website"} href={user?.website} target={"_blank"}>
+            {user?.website}
           </Anchor>
         </Stack>
         <Stack>
           <Group position="apart">
             <Stack spacing={"xs"}>
               <Text component="strong">Country</Text>
-              <Text>{user.country}</Text>
+              <Text>{user?.country}</Text>
             </Stack>
             <Stack spacing={"xs"}>
               <Text component="strong">City</Text>
-              <Text>{user.city}</Text>
+              <Text>{user?.city}</Text>
             </Stack>
           </Group>
         </Stack>

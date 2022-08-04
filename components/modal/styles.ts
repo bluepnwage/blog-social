@@ -45,6 +45,9 @@ export const useStyles = createStyles((theme) => ({
     color: theme.white
   },
   btn: {
-    display: "block"
+    display: "block",
+    "&:disabled": {
+      cursor: "not-allowed"
+    }
   }
 }));

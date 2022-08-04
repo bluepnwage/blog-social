@@ -8,10 +8,9 @@ import { User } from "@interfaces/supabase";
 interface PropTypes {
   children: ReactNode;
   user?: User;
-  avatar?: string;
 }
 
-function ProfileModal({ children, user, avatar }: PropTypes) {
+function ProfileModal({ children, user }: PropTypes) {
   const { classes, cx } = useStyles();
   const [opened, handler] = useDisclosure(false);
   return (
@@ -26,13 +25,13 @@ function ProfileModal({ children, user, avatar }: PropTypes) {
         {(styles) => {
           return (
             <div style={styles.overlay} className={cx(classes.overlay)}>
-              <Modal avatar={avatar} user={user} styles={styles} onClose={handler.close} />
+              <Modal user={user} styles={styles} onClose={handler.close} />
             </div>
           );
         }}
       </GroupedTransition>
       <UnstyledButton
-        disabled={!user || !avatar}
+        disabled={!user}
         title="Open user profile"
         onClick={handler.open}
         className={classes.btn}

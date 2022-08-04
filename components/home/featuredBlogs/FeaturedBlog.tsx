@@ -4,9 +4,7 @@ import { useStyles } from "./styles";
 import { Suspense, lazy } from "react";
 import { Blog } from "@interfaces/supabase";
 import { formatDate } from "@util/formatDate";
-import { useThumbnail } from "hooks/useThumbnail";
-import { useUser } from "hooks/useUser";
-import { useAvatar } from "hooks/useAvatar";
+import { useUser } from "@hooks/useUser";
 
 const ProfileModal = lazy(() => import("@components/modal/ProfileModal"));
 
@@ -15,9 +13,7 @@ interface PropTypes {
 }
 
 export function FeaturedBlog({ blog }: PropTypes) {
-  const { thumbnail, isLoading } = useThumbnail(blog.thumbnail ? [blog.id, blog.thumbnail] : null);
   const { user, userLoading } = useUser(blog.author_id);
-  const { avatar, avatarLoading } = useAvatar(!userLoading ? [user.avatar_url, user.avatar_url] : null);
   const { classes, cx } = useStyles();
 
   const date = new Date(blog.created_at);
@@ -25,15 +21,13 @@ export function FeaturedBlog({ blog }: PropTypes) {
     <>
       <div className={cx("container", classes.blogContainer)}>
         <figure className={classes.imageContainer}>
-          <Skeleton visible={isLoading} width={"100%"} height={"100%"}>
-            <Image
-              src={thumbnail ? thumbnail : ""}
-              height={"100%"}
-              width={"100%"}
-              imageProps={{ loading: "lazy" }}
-              alt={"Philipsburg"}
-            />
-          </Skeleton>
+          <Image
+            src={blog.thumbnail}
+            height={"100%"}
+            width={"100%"}
+            imageProps={{ loading: "lazy" }}
+            alt={"Philipsburg"}
+          />
         </figure>
         <div className={classes.descriptionContainer}>
           <Text weight={400} className={classes.dimmedText} component={"time"}>
@@ -51,12 +45,12 @@ export function FeaturedBlog({ blog }: PropTypes) {
             <Anchor>Read article</Anchor>
           </Link>
           <Suspense fallback={null}>
-            <ProfileModal avatar={!avatarLoading && avatar} user={!userLoading && user}>
+            <ProfileModal user={!userLoading && user}>
               <Group mt={"md"}>
-                <Skeleton radius={"xl"} width={"fit-content"} visible={avatarLoading}>
+                <Skeleton radius={"xl"} width={"fit-content"} visible={userLoading}>
                   <Avatar
                     imageProps={{ loading: "lazy" }}
-                    src={avatar || ""}
+                    src={user?.avatar_url || ""}
                     radius={"xl"}
                     size={"lg"}
                     alt={"Profile picture for author"}
@@ -66,11 +60,11 @@ export function FeaturedBlog({ blog }: PropTypes) {
                   {!userLoading && (
                     <>
                       <Text size="sm" component="strong">
-                        {user.first_name} {user.last_name}
+                        {user?.first_name} {user?.last_name}
                       </Text>
 
                       <Text size="sm" component="span" className={classes.dimmedText}>
-                        {user.occupation}
+                        {user?.occupation}
                       </Text>
                     </>
                   )}
