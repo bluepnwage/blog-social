@@ -2,10 +2,10 @@ import { Title, Pagination } from "@mantine/core";
 import { useState } from "react";
 import { useStyles } from "./styles";
 import { FeaturedBlog } from "./FeaturedBlog";
-import { Blog } from "@interfaces/supabase";
+import { BlogJoin } from "@interfaces/supabase";
 
 interface PropTypes {
-  blogs: Blog[];
+  blogs: BlogJoin[];
 }
 
 export function FeaturedList({ blogs }: PropTypes) {
@@ -25,8 +25,8 @@ export function FeaturedList({ blogs }: PropTypes) {
             Most Popular Blogs
           </Title>
         </header>
-        {blogs.map((blog) => {
-          return <FeaturedBlog blog={blog} key={blog.id} />;
+        {blogs.map(({ profiles: user, ...blog }) => {
+          return <FeaturedBlog user={user} blog={blog} key={blog.id} />;
         })}
         <div>
           <Pagination radius={"xl"} withControls={false} mt={48} onChange={togglePage} page={activePage} total={3} />

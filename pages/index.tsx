@@ -1,11 +1,11 @@
 import { Hero, FeaturedList, LatestBlogs } from "components/home";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import { GetStaticProps } from "next";
-import { Blog } from "@interfaces/supabase";
+import { BlogJoin } from "@interfaces/supabase";
 
 interface PropTypes {
-  featuredBlogs: Blog[];
-  latestBlogs: Blog[];
+  featuredBlogs: BlogJoin[];
+  latestBlogs: BlogJoin[];
 }
 
 export default function Home({ featuredBlogs, latestBlogs }: PropTypes) {
@@ -21,19 +21,18 @@ export default function Home({ featuredBlogs, latestBlogs }: PropTypes) {
 export const getStaticProps: GetStaticProps = async () => {
   const [{ data: featuredBlogs }, { data: latestBlogs }] = await Promise.all([
     await supabaseClient
-      .from<Blog>("blogs")
-      .select("*")
+      .from<BlogJoin>("blogs")
+      .select("*, profiles(*)")
       .eq("published", true)
       .order("likes", { ascending: false })
       .limit(1),
     await supabaseClient
-      .from<Blog>("blogs")
-      .select("*")
+      .from<BlogJoin>("blogs")
+      .select("*, profiles(*)")
       .eq("published", true)
       .order("created_at", { ascending: false })
       .limit(10)
   ]);
-  console.log(latestBlogs);
   return {
     props: {
       featuredBlogs,

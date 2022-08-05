@@ -1,10 +1,10 @@
 import { Title, SimpleGrid } from "@mantine/core";
 import { useStyles } from "./styles";
 import { LatestBlog } from "./LatestBlog";
-import { Blog } from "@interfaces/supabase";
+import { BlogJoin } from "@interfaces/supabase";
 
 interface PropTypes {
-  blogs: Blog[];
+  blogs: BlogJoin[];
 }
 
 export function LatestBlogs({ blogs }: PropTypes) {
@@ -23,8 +23,8 @@ export function LatestBlogs({ blogs }: PropTypes) {
           cols={3}
           className={cx("container", classes.grid)}
         >
-          {blogs.map((blog) => (
-            <LatestBlog key={blog.id} blog={blog} />
+          {blogs.map(({ profiles: user, ...blog }) => (
+            <LatestBlog key={blog.id} blog={blog} user={user} />
           ))}
         </SimpleGrid>
       </section>
