@@ -1,10 +1,13 @@
 import { Title, Select, Divider } from "@mantine/core";
 import { useStyles } from "./styles";
-import { useState } from "react";
 
-export function Filters() {
+interface PropTypes {
+  filter: string;
+  onChange: (value: string) => void;
+}
+
+export function Filters({ filter, onChange }: PropTypes) {
   const { classes, cx } = useStyles();
-  const [filter, setFilter] = useState("popular");
 
   const filterType = filter.slice(0, 1).toUpperCase() + filter.slice(1);
 
@@ -13,16 +16,17 @@ export function Filters() {
       <div className={cx(classes.flex, "container", classes.filterContainer)}>
         <header>
           <Title mb={"md"} order={1}>
-            Most {filterType} Blogs
+            {filterType} Blogs
           </Title>
         </header>
         <Select
-          onChange={setFilter}
+          onChange={onChange}
           value={filter}
           width={100}
           data={[
             { value: "popular", label: "Most Popular" },
-            { value: "recent", label: "Most Recent" }
+            { value: "recent", label: "Most Recent" },
+            { value: "least popular", label: "Least Popular" }
           ]}
         />
       </div>

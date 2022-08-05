@@ -49,12 +49,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { data } = await supabaseClient
     .from<BlogJoin>("blogs")
-    .select(
-      `*, 
-    profiles (
-      *
-      )`
-    )
+    .select(`*, profiles (*)`)
     .eq("id", params.slug as string)
     .single();
 

@@ -26,7 +26,6 @@ export function LatestBlog({ blog, user: userData }: PropTypes) {
             src={blog.thumbnail}
             width={"100%"}
             height={200}
-            withPlaceholder
             imageProps={{ loading: "lazy" }}
             alt={""}
           />

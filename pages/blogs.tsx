@@ -1,17 +1,16 @@
-import { Filters, BlogList } from "components/blogs";
+import { BlogList } from "components/blogs";
 import { GetStaticProps } from "next";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
-import { Blog } from "@interfaces/supabase";
+import { BlogJoin } from "@interfaces/supabase";
 
 interface PropTypes {
-  blogs: Blog[];
+  blogs: BlogJoin[];
 }
 
 export default function Blogs({ blogs }: PropTypes) {
   return (
     <>
       <section className={"section-container"}>
-        <Filters />
         <BlogList blogs={blogs} />
       </section>
     </>
@@ -19,7 +18,11 @@ export default function Blogs({ blogs }: PropTypes) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { data: blogs } = await supabaseClient.from<Blog>("blogs").select("*").limit(10);
+  const { data: blogs } = await supabaseClient
+    .from<BlogJoin>("blogs")
+    .select("*, profiles(*)")
+    .eq("published", true)
+    .limit(10);
   return {
     props: {
       blogs

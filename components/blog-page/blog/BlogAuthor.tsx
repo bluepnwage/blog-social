@@ -4,6 +4,7 @@ import { useStyles } from "./styles";
 import { Suspense, lazy } from "react";
 import { User } from "@interfaces/supabase";
 import { formatDate } from "@util/formatDate";
+import { useUser } from "@hooks/useUser";
 
 const ProfileModal = lazy(() => import("@components/modal/ProfileModal"));
 
@@ -12,8 +13,10 @@ interface PropTypes {
   uploadDate: string;
 }
 
-export function BlogAuthor({ user, uploadDate }: PropTypes) {
+export function BlogAuthor({ user: userData, uploadDate }: PropTypes) {
+  const { user } = useUser(userData.id, { fallbackData: userData });
   const { classes } = useStyles();
+
   const date = new Date(uploadDate);
   return (
     <>
