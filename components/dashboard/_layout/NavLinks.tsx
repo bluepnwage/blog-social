@@ -10,19 +10,19 @@ export function NavLinks() {
   const links = [
     {
       label: "Home",
-      href: "/dashboard/bluepnwage",
+      href: "/dashboard",
       description: "View stats for your account",
       icon: <Home />
     },
     {
       label: "Editor",
-      href: "/dashboard/bluepnwage/editor",
+      href: "/dashboard/editor",
       description: "Manage your blogs",
       icon: <FilePlus />
     },
     {
       label: "Profile",
-      href: "/dashboard/bluepnwage/profile",
+      href: "/dashboard/profile",
       description: "Update your profile",
       icon: <User />
     }
@@ -30,7 +30,7 @@ export function NavLinks() {
   return (
     <>
       {links.map((link) => {
-        const editorRoute = "/dashboard/bluepnwage/editor";
+        const editorRoute = "/dashboard/editor";
         const editorActive = path.includes(editorRoute) && link.href === editorRoute;
 
         const active = link.href === path || editorActive;

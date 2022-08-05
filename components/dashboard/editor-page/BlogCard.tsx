@@ -98,7 +98,7 @@ export function BlogCard({ blog, onDelete }: PropTypes) {
           </Badge>
         </Stack>
         <Group position="center">
-          <Link href={`/dashboard/bluepnwage/editor/${blog.id}`} passHref>
+          <Link href={`/dashboard/editor/${blog.id}`} passHref>
             <Button size="lg" radius={"xl"} variant={"light"} component="a">
               Edit blog
             </Button>
