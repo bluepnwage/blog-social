@@ -18,7 +18,7 @@ export function FeaturedBlog({ blog }: PropTypes) {
 
   const date = new Date(blog.created_at);
   return (
-    <>
+    <Suspense fallback={null}>
       <div className={cx("container", classes.blogContainer)}>
         <figure className={classes.imageContainer}>
           <Image
@@ -81,6 +81,6 @@ export function FeaturedBlog({ blog }: PropTypes) {
           </Suspense>
         </div>
       </div>
-    </>
+    </Suspense>
   );
 }

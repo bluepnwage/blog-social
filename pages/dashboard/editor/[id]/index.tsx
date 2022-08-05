@@ -32,7 +32,7 @@ export const getServerSideProps = withPageAuth({
       .from<Blog>("blogs")
       .select("*")
       .eq("author_id", user.id)
-      .eq("id", parseInt(context.params.slug as string))
+      .eq("id", parseInt(context.params.id as string))
       .single();
 
     if (error) {

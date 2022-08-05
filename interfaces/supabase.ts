@@ -28,3 +28,7 @@ export interface User {
   last_name: string;
   occupation: string;
 }
+
+export interface BlogJoin extends Blog {
+  profiles: User;
+}

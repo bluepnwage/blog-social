@@ -2,11 +2,19 @@ import Link from "next/link";
 import { Anchor, Avatar, Card, Group, Image, Stack, Text, Title } from "@mantine/core";
 import { useStyles } from "./styles";
 import { Suspense, lazy } from "react";
+import { Blog as BlogProps } from "@interfaces/supabase";
+import { formatDate } from "@util/formatDate";
+import { useUser } from "@hooks/useUser";
 
 const ProfileModal = lazy(() => import("@components/modal/ProfileModal"));
+interface PropTypes {
+  blog: BlogProps;
+}
 
-export function Blog() {
+export function Blog({ blog }: PropTypes) {
   const { classes } = useStyles();
+  const { user, userLoading } = useUser(blog.author_id);
+  const date = new Date(blog.created_at);
   return (
     <Suspense fallback={null}>
       <Card className={classes.card}>
@@ -19,25 +27,20 @@ export function Blog() {
             alt={"Philipsburg"}
           />
         </Card.Section>
-        <Text component="strong">
-          Travel —{" "}
-          <Text component="time" weight={400} className={classes.dimmedText}>
-            Jul 21, 2022
-          </Text>
+        <Text component="time" weight={400} className={classes.dimmedText}>
+          {formatDate(date)}
         </Text>
         <Title mb={"md"} order={3}>
-          Culpa amet culpa do esse Lorem excepteur sunt ad non eu Lorem.
+          {blog.heading}
         </Title>
         <Text mb={"md"} component="p">
-          Non magna sit eu velit esse et est mollit dolor laboris. In ea irure enim tempor pariatur non ex adipisicing
-          dolor consectetur magna elit. Mollit excepteur sint irure consequat ipsum esse reprehenderit exercitation
-          consectetur occaecat.
+          {blog.description}
         </Text>
-        <Link passHref href={"/blogs/2"}>
+        <Link passHref href={`/blogs/${blog.slug}`}>
           <Anchor>Read article</Anchor>
         </Link>
         <Suspense fallback={null}>
-          <ProfileModal>
+          <ProfileModal user={user}>
             <Group mt={"md"}>
               <Avatar
                 imageProps={{ loading: "lazy" }}
@@ -48,10 +51,10 @@ export function Blog() {
               />
               <Stack spacing={0}>
                 <Text size="sm" component="strong">
-                  Agis Carty
+                  {user?.first_name}
                 </Text>
                 <Text size="sm" component="span" className={classes.dimmedText}>
-                  Front-end Developer
+                  {user?.occupation}
                 </Text>
               </Stack>
             </Group>

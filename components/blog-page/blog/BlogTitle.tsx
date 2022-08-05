@@ -1,11 +1,15 @@
 import { Title } from "@mantine/core";
 import { useStyles } from "./styles";
 
-export function BlogTitle() {
+interface PropTypes {
+  heading: string;
+}
+
+export function BlogTitle({ heading }: PropTypes) {
   const { classes } = useStyles();
   return (
     <header className={classes.container}>
-      <Title order={1}>Fugiat amet quis reprehenderit nulla do laborum labore ullamco aliqua cillum.</Title>
+      <Title order={1}>{heading}</Title>
     </header>
   );
 }

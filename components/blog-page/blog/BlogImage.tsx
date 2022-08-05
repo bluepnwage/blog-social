@@ -1,17 +1,20 @@
 import { useStyles } from "./styles";
 import { Image, Text } from "@mantine/core";
 
-export function BlogImage() {
+interface PropTypes {
+  image: string;
+  description: string;
+}
+
+export function BlogImage({ image, description }: PropTypes) {
   const { classes, cx } = useStyles();
   return (
     <>
       <figure className={cx(classes.container, classes.imageContainer)}>
-        <Image width={"100%"} height={"100%"} alt={"Blog thumbnail"} src={"/painting.jpg"} />
+        <Image width={"100%"} height={"100%"} alt={"Blog thumbnail"} src={image} />
       </figure>
       <Text className={cx(classes.container, classes.dimmedText)} component="p">
-        Velit ad nulla laboris esse do. Sunt voluptate commodo ea ipsum irure duis occaecat irure cillum reprehenderit.
-        Ea veniam eu excepteur dolore esse Lorem minim enim id cillum ea occaecat Lorem. Officia tempor in aliqua nulla
-        ut qui duis.
+        {description}
       </Text>
     </>
   );

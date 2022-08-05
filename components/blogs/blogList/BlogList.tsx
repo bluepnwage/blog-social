@@ -1,10 +1,14 @@
 import { SimpleGrid } from "@mantine/core";
 import { useStyles } from "./styles";
 import { Blog } from "./Blog";
+import { Blog as BlogProps } from "@interfaces/supabase";
 
-export function BlogList() {
+interface PropTypes {
+  blogs: BlogProps[];
+}
+
+export function BlogList({ blogs }: PropTypes) {
   const { classes, cx, theme } = useStyles();
-  const blogs = Array(6).fill(null);
   return (
     <>
       <SimpleGrid
@@ -12,8 +16,8 @@ export function BlogList() {
         cols={3}
         className={cx("container", classes.grid)}
       >
-        {blogs.map((_, index) => (
-          <Blog key={index} />
+        {blogs.map((blog, index) => (
+          <Blog blog={blog} key={index} />
         ))}
       </SimpleGrid>
     </>

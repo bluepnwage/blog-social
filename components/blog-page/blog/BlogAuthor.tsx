@@ -2,29 +2,39 @@ import { ActionIcon, Avatar, Group, Stack, Text } from "@mantine/core";
 import { BrandFacebook, BrandTwitter, HeartPlus, Share } from "tabler-icons-react";
 import { useStyles } from "./styles";
 import { Suspense, lazy } from "react";
+import { User } from "@interfaces/supabase";
+import { formatDate } from "@util/formatDate";
 
 const ProfileModal = lazy(() => import("@components/modal/ProfileModal"));
 
-export function BlogAuthor() {
+interface PropTypes {
+  user: User;
+  uploadDate: string;
+}
+
+export function BlogAuthor({ user, uploadDate }: PropTypes) {
   const { classes } = useStyles();
+  const date = new Date(uploadDate);
   return (
     <>
       <div className={classes.container}>
         <Group className={classes.authorContainer} mb={40} mt={"xl"}>
           <Suspense fallback={null}>
-            <ProfileModal>
+            <ProfileModal user={user}>
               <Group className={classes.authorWrapper}>
                 <Avatar
                   imageProps={{ loading: "lazy" }}
                   alt={"User profile"}
-                  src={"/bluepnwage.jpg"}
+                  src={user.avatar_url}
                   size={"lg"}
                   radius={"xl"}
                 />
                 <Stack spacing={0}>
-                  <Text component="strong">Agis Carty</Text>
+                  <Text component="strong">
+                    {user.first_name} {user.last_name}
+                  </Text>
                   <Text component="span" className={classes.dimmedText}>
-                    <Text component="time">Jul 21, 2022</Text> — 2 min read
+                    <Text component="time">{formatDate(date)}</Text> — 2 min read
                   </Text>
                 </Stack>
               </Group>

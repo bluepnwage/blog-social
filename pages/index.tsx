@@ -19,17 +19,21 @@ export default function Home({ featuredBlogs, latestBlogs }: PropTypes) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const { data: featuredBlogs } = await supabaseClient
-    .from<Blog>("blogs")
-    .select("*")
-    .eq("published", true)
-    .order("likes", { ascending: false })
-    .limit(1);
-  const { data: latestBlogs } = await supabaseClient
-    .from<Blog>("blogs")
-    .select("*")
-    .eq("published", true)
-    .order("created_at", { ascending: false });
+  const [{ data: featuredBlogs }, { data: latestBlogs }] = await Promise.all([
+    await supabaseClient
+      .from<Blog>("blogs")
+      .select("*")
+      .eq("published", true)
+      .order("likes", { ascending: false })
+      .limit(1),
+    await supabaseClient
+      .from<Blog>("blogs")
+      .select("*")
+      .eq("published", true)
+      .order("created_at", { ascending: false })
+      .limit(10)
+  ]);
+  console.log(latestBlogs);
   return {
     props: {
       featuredBlogs,

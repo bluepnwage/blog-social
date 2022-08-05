@@ -41,7 +41,7 @@ function Menu({ userID }: PropTypes) {
         </MantineMenu.Target>
         <MantineMenu.Dropdown>
           <MantineMenu.Label>Profile</MantineMenu.Label>
-          <MantineMenu.Item component={NextLink} href={"/dashboard/bluepnwage"} icon={<User size={16} />}>
+          <MantineMenu.Item component={NextLink} href={"/dashboard"} icon={<User size={16} />}>
             Dashboard
           </MantineMenu.Item>
           <MantineMenu.Item closeMenuOnClick={false} onClick={() => toggleColorScheme()} icon={icon}>
