@@ -20,27 +20,11 @@ export const useStyles = createStyles((theme) => ({
     justifyContent: "space-between",
     gap: theme.spacing.md
   },
-  inner: {
-    padding: 0
-  },
-  card: {
-    width: "40%"
-  },
+
   header: {
     padding: `${theme.spacing.xs}px ${theme.spacing.md}px`
   },
-  overlay: {
-    height: "100vh",
-    top: 0,
-    left: 0,
-    width: "100vw",
-    position: "fixed",
-    backgroundColor: theme.fn.rgba(theme.black, 0.7),
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 250
-  },
+
   icon: {
     color: theme.white
   },

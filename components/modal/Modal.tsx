@@ -1,20 +1,17 @@
 import { Avatar, Card, Text, ActionIcon, Group, Stack, Anchor, Divider } from "@mantine/core";
 import { BrandTwitch, BrandTwitter, BrandLinkedin, X } from "tabler-icons-react";
-import { useClickOutside } from "@mantine/hooks";
 import { useStyles } from "./styles";
 import { User } from "@interfaces/supabase";
 
 interface PropTypes {
   onClose: () => void;
-  styles: any;
   user: User;
 }
 
-export function Modal({ onClose, styles, user }: PropTypes) {
-  const ref = useClickOutside(onClose);
+export function Modal({ onClose, user }: PropTypes) {
   const { classes, cx } = useStyles();
   return (
-    <Card style={styles.modal} ref={ref} p={0} className={cx(classes.flex, classes.card)}>
+    <Card p={0} className={cx(classes.flex)}>
       <div className={cx(classes.gradientContainer, classes.flex)}>
         <Avatar
           size={"xl"}
@@ -42,7 +39,7 @@ export function Modal({ onClose, styles, user }: PropTypes) {
         <Stack spacing={0}>
           <Group position="apart">
             <Text>User profile</Text>
-            <ActionIcon onClick={onClose}>
+            <ActionIcon title="Close modal" onClick={onClose}>
               <X />
             </ActionIcon>
           </Group>

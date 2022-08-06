@@ -1,4 +1,4 @@
-import { GroupedTransition, UnstyledButton } from "@mantine/core";
+import { UnstyledButton, Modal as MantineModal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useStyles } from "./styles";
 import { Modal } from "./Modal";
@@ -8,34 +8,36 @@ import { User } from "@interfaces/supabase";
 interface PropTypes {
   children: ReactNode;
   user?: User;
+  onClose?: () => void;
 }
 
-function ProfileModal({ children, user }: PropTypes) {
-  const { classes, cx } = useStyles();
+function ProfileModal({ children, user, onClose }: PropTypes) {
+  const { classes } = useStyles();
   const [opened, handler] = useDisclosure(false);
+
+  const closeModal = onClose
+    ? () => {
+        onClose();
+        handler.close();
+      }
+    : handler.close;
+
   return (
     <>
-      <GroupedTransition
-        mounted={opened}
-        transitions={{
-          overlay: { duration: 100, transition: "fade", timingFunction: "ease" },
-          modal: { duration: 250, transition: "scale", timingFunction: "ease" }
-        }}
+      <MantineModal
+        padding={0}
+        size={"50%"}
+        withCloseButton={false}
+        overlayOpacity={0.55}
+        overlayBlur={3}
+        zIndex={500}
+        opened={opened}
+        onClose={closeModal}
       >
-        {(styles) => {
-          return (
-            <div style={styles.overlay} className={cx(classes.overlay)}>
-              <Modal user={user} styles={styles} onClose={handler.close} />
-            </div>
-          );
-        }}
-      </GroupedTransition>
-      <UnstyledButton
-        disabled={!user}
-        title="Open user profile"
-        onClick={handler.open}
-        className={classes.btn}
-      >
+        <Modal user={user} onClose={closeModal} />
+      </MantineModal>
+
+      <UnstyledButton disabled={!user} title="Open user profile" onClick={handler.open} className={classes.btn}>
         {children}
       </UnstyledButton>
     </>

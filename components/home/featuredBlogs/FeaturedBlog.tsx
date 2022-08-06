@@ -11,9 +11,10 @@ const ProfileModal = lazy(() => import("@components/modal/ProfileModal"));
 interface PropTypes {
   blog: Blog;
   user: User;
+  onClose: () => void;
 }
 
-export function FeaturedBlog({ blog, user: userData }: PropTypes) {
+export function FeaturedBlog({ blog, user: userData, onClose }: PropTypes) {
   const { user, userLoading } = useUser(blog.author_id, { fallbackData: userData });
   const { classes, cx } = useStyles();
 
@@ -46,12 +47,12 @@ export function FeaturedBlog({ blog, user: userData }: PropTypes) {
             <Anchor>Read article</Anchor>
           </Link>
           <Suspense fallback={null}>
-            <ProfileModal user={user}>
+            <ProfileModal user={user} onClose={onClose}>
               <Group mt={"md"}>
                 <Skeleton radius={"xl"} width={"fit-content"} visible={userLoading}>
                   <Avatar
                     imageProps={{ loading: "lazy" }}
-                    src={user.avatar_url || ""}
+                    src={user.avatar_url}
                     radius={"xl"}
                     size={"lg"}
                     alt={"Profile picture for author"}

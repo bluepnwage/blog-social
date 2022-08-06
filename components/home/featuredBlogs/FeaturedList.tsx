@@ -1,20 +1,21 @@
-import { Title, Pagination } from "@mantine/core";
-import { useState } from "react";
+import { Title } from "@mantine/core";
+import { useRef, Suspense } from "react";
 import { useStyles } from "./styles";
 import { FeaturedBlog } from "./FeaturedBlog";
 import { BlogJoin } from "@interfaces/supabase";
+import { Carousel } from "@mantine/carousel";
+import AutoPlay from "embla-carousel-autoplay";
 
 interface PropTypes {
   blogs: BlogJoin[];
 }
 
 export function FeaturedList({ blogs }: PropTypes) {
+  const autoplay = useRef(AutoPlay({ delay: 3500 }));
   const { classes, cx } = useStyles();
-  const [activePage, setActivePage] = useState(1);
 
-  const togglePage = (num?: number) => {
-    if (num) return setActivePage(num);
-    setActivePage((prev) => (prev === 3 ? 1 : prev + 1));
+  const closeModal = () => {
+    autoplay.current.play();
   };
 
   return (
@@ -25,12 +26,26 @@ export function FeaturedList({ blogs }: PropTypes) {
             Most Popular Blogs
           </Title>
         </header>
-        {blogs.map(({ profiles: user, ...blog }) => {
-          return <FeaturedBlog user={user} blog={blog} key={blog.id} />;
-        })}
-        <div>
-          <Pagination radius={"xl"} withControls={false} mt={48} onChange={togglePage} page={activePage} total={3} />
-        </div>
+        <Suspense fallback={null}>
+          <Carousel
+            plugins={[autoplay.current]}
+            onMouseEnter={autoplay.current.stop}
+            onMouseLeave={autoplay.current.reset}
+            sx={{ width: "80%" }}
+            height={300}
+            loop
+            withControls={false}
+            withIndicators
+          >
+            {blogs.map(({ profiles: user, ...blog }) => {
+              return (
+                <Carousel.Slide key={blog.id}>
+                  <FeaturedBlog onClose={closeModal} user={user} blog={blog} />
+                </Carousel.Slide>
+              );
+            })}
+          </Carousel>
+        </Suspense>
       </section>
     </>
   );

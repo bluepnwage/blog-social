@@ -25,7 +25,7 @@ export const getStaticProps: GetStaticProps = async () => {
       .select("*, profiles(*)")
       .eq("published", true)
       .order("likes", { ascending: false })
-      .limit(1),
+      .limit(3),
     await supabaseClient
       .from<BlogJoin>("blogs")
       .select("*, profiles(*)")
