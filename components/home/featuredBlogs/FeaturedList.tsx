@@ -1,5 +1,5 @@
 import { Title } from "@mantine/core";
-import { useRef, Suspense, memo } from "react";
+import { useRef, memo } from "react";
 import { useStyles } from "./styles";
 import { FeaturedBlog } from "./FeaturedBlog";
 import { BlogJoin } from "@interfaces/supabase";
@@ -26,26 +26,24 @@ function FeaturedList({ blogs }: PropTypes) {
             Most Popular Blogs
           </Title>
         </header>
-        <Suspense fallback={null}>
-          <Carousel
-            plugins={[autoplay.current]}
-            onMouseEnter={autoplay.current.stop}
-            onMouseLeave={autoplay.current.reset}
-            sx={{ width: "80%" }}
-            height={300}
-            loop
-            withControls={false}
-            withIndicators
-          >
-            {blogs.map(({ profiles: user, ...blog }) => {
-              return (
-                <Carousel.Slide key={blog.id}>
-                  <FeaturedBlog onClose={closeModal} user={user} blog={blog} />
-                </Carousel.Slide>
-              );
-            })}
-          </Carousel>
-        </Suspense>
+        <Carousel
+          plugins={[autoplay.current]}
+          onMouseEnter={autoplay.current.stop}
+          onMouseLeave={autoplay.current.reset}
+          sx={{ width: "80%" }}
+          height={300}
+          loop
+          withControls={false}
+          withIndicators
+        >
+          {blogs.map(({ profiles: user, ...blog }) => {
+            return (
+              <Carousel.Slide key={blog.id}>
+                <FeaturedBlog onClose={closeModal} user={user} blog={blog} />
+              </Carousel.Slide>
+            );
+          })}
+        </Carousel>
       </section>
     </>
   );
