@@ -1,5 +1,5 @@
 import { Title } from "@mantine/core";
-import { useRef, Suspense } from "react";
+import { useRef, Suspense, memo } from "react";
 import { useStyles } from "./styles";
 import { FeaturedBlog } from "./FeaturedBlog";
 import { BlogJoin } from "@interfaces/supabase";
@@ -10,7 +10,7 @@ interface PropTypes {
   blogs: BlogJoin[];
 }
 
-export function FeaturedList({ blogs }: PropTypes) {
+function FeaturedList({ blogs }: PropTypes) {
   const autoplay = useRef(AutoPlay({ delay: 3500 }));
   const { classes, cx } = useStyles();
 
@@ -50,3 +50,5 @@ export function FeaturedList({ blogs }: PropTypes) {
     </>
   );
 }
+
+export default memo(FeaturedList);
