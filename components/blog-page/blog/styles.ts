@@ -22,7 +22,9 @@ export const useStyles = createStyles((theme) => ({
   authorContainer: {
     justifyContent: "space-between",
     [theme.fn.smallerThan("sm")]: {
-      justifyContent: "center"
+      alignItems: "center",
+      justifyContent: "flex-start",
+      flexDirection: "column"
     }
   },
   authorWrapper: {
@@ -34,5 +36,8 @@ export const useStyles = createStyles((theme) => ({
   },
   dimmedText: {
     color: checkTheme(theme, theme.colors.gray[7], theme.colors.dark[2])
+  },
+  likedHeart: {
+    fill: theme.colors.red[7]
   }
 }));

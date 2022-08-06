@@ -9,7 +9,7 @@ async function fetcher(id: string) {
   return data;
 }
 
-export function useUser(key: string, options?: SWRConfiguration<User>) {
-  const { data, error } = useSWR<User>(key, fetcher, { ...options, revalidateOnFocus: false });
-  return { user: data, userLoading: !error && !data };
+export function useUser(key: string | null, options?: SWRConfiguration<User>) {
+  const { data, error, mutate } = useSWR<User>(key, fetcher, { ...options, revalidateOnFocus: false });
+  return { user: data, userLoading: !error && !data, mutate };
 }

@@ -10,24 +10,25 @@ const RelatedBlogs = lazy(() => import("@components/blog-page/relatedBlogs/Relat
 interface PropTypes {
   blog: BlogProps;
   user: User;
+  relatedBlogs: BlogProps[];
 }
 
-export default function Blog({ blog, user }: PropTypes) {
+export default function Blog({ blog, user, relatedBlogs }: PropTypes) {
   return (
     <>
       <section className={"section-container"}>
         <Suspense fallback={null}>
-          <BlogAuthor user={user} uploadDate={blog.created_at} />
+          <BlogAuthor slug={blog.slug} blogID={blog.id} user={user} uploadDate={blog.created_at} />
         </Suspense>
         <BlogTitle heading={blog.heading} />
         <BlogImage description={blog.description} image={blog.thumbnail} />
         <BlogArticle content={blog.content} />
         <Suspense fallback={null}>
-          <BlogStats likes={blog.likes} />
+          <BlogStats slug={blog.slug} likes={blog.likes} />
         </Suspense>
       </section>
       <Suspense fallback={null}>
-        <RelatedBlogs />
+        <RelatedBlogs blogs={relatedBlogs} />
       </Suspense>
     </>
   );
@@ -54,11 +55,17 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     .single();
 
   const { profiles: user, ...blog } = data;
+  const { data: relatedBlogs } = await supabaseClient
+    .from<BlogProps>("blogs")
+    .select("*")
+    .neq("id", params.slug as string)
+    .limit(5);
 
   return {
     props: {
       blog,
-      user
+      user,
+      relatedBlogs
     }
   };
 };

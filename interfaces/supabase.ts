@@ -27,6 +27,7 @@ export interface User {
   first_name: string;
   last_name: string;
   occupation: string;
+  likes: number[];
 }
 
 export interface BlogJoin extends Blog {

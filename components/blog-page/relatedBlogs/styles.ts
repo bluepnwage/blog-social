@@ -12,7 +12,7 @@ export const useStyles = createStyles((theme) => ({
   },
   imageContainer: {
     aspectRatio: "16/ 9",
-    flex: "1 1 100%",
+    flex: "1 1 45%",
     overflow: "hidden",
     borderRadius: theme.radius.md
   },
@@ -22,5 +22,8 @@ export const useStyles = createStyles((theme) => ({
     [theme.fn.smallerThan("sm")]: {
       flexDirection: "column-reverse"
     }
+  },
+  descriptionContainer: {
+    flex: "1 1 45%"
   }
 }));

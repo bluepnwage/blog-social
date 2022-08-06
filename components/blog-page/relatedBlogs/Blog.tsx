@@ -2,39 +2,41 @@ import Link from "next/link";
 import { Image, Text, Title, Anchor } from "@mantine/core";
 import { useStyles } from "./styles";
 import { ReactNode } from "react";
+import { Blog as BlogProps } from "@interfaces/supabase";
+import { formatDate } from "@util/formatDate";
 
 interface PropTypes {
   children: ReactNode;
+  blog: BlogProps;
 }
 
-export function Blog({ children }: PropTypes) {
+export function Blog({ children, blog }: PropTypes) {
   const { classes, cx } = useStyles();
-  const link = Math.floor(Math.random() * 1500);
+  const date = new Date(blog.created_at);
   return (
     <>
       <div className={cx(classes.container, classes.articleContainer)}>
-        <article>
+        <article className={classes.descriptionContainer}>
           <Text component="time" color={"dimmed"}>
-            Jul 21, 2022
+            {formatDate(date)}
           </Text>
           <Title mt={"xs"} mb={"md"} order={3}>
-            Aliquip id ullamco cillum exercitation Lorem amet in ea nostrud dolor do.
+            {blog.title}
           </Title>
           <Text mb={"sm"} component="p">
-            Laborum dolore id culpa eu. Esse elit ut aliquip est sit exercitation amet aliqua. Minim deserunt proident
-            minim cillum reprehenderit laborum in laboris amet sunt velit.
+            {blog.description}
           </Text>
-          <Link href={`/blogs/${link}`} passHref>
+          <Link href={`/blogs/${blog.id}`} passHref>
             <Anchor>Read article</Anchor>
           </Link>
         </article>
         <figure className={classes.imageContainer}>
           <Image
-            src={"/underworld.jpg"}
+            src={blog.thumbnail}
             width={"100%"}
             height={"100%"}
             imageProps={{ loading: "lazy" }}
-            alt={"Painting of the underworld"}
+            alt={"Thumbnail for blog"}
           />
         </figure>
       </div>
