@@ -31,8 +31,8 @@ export const getServerSideProps = withPageAuth({
   async getServerSideProps(context) {
     const { user: userID } = await getUser(context);
     const [blogData, { body: user }] = await Promise.all([
-      await supabaseServerClient(context).from<Blog>("blogs").select("*").eq("author_id", userID.id),
-      await supabaseServerClient(context).from<User>("profiles").select("first_name").single()
+      supabaseServerClient(context).from<Blog>("blogs").select("*").eq("author_id", userID.id),
+      supabaseServerClient(context).from<User>("profiles").select("first_name").single()
     ]);
 
     return {

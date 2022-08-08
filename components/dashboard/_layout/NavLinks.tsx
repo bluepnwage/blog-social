@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { NavLink } from "@mantine/core";
 import { useRouter } from "next/router";
-import { FilePlus, Home, User } from "tabler-icons-react";
+import { FilePlus, Home, User, Heart } from "tabler-icons-react";
 
 export function NavLinks() {
   const router = useRouter();
@@ -25,6 +25,12 @@ export function NavLinks() {
       href: "/dashboard/profile",
       description: "Update your profile",
       icon: <User />
+    },
+    {
+      label: "Likes",
+      href: "/dashboard/likes",
+      description: "View your past likes",
+      icon: <Heart />
     }
   ];
   return (
