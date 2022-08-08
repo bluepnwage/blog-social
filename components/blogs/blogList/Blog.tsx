@@ -50,7 +50,7 @@ export function Blog({ blog, user: userData }: PropTypes) {
                 />
                 <Stack spacing={0}>
                   <Text size="sm" component="strong">
-                    {user.first_name}
+                    {user.first_name} {user.last_name}
                   </Text>
                   <Text size="sm" component="span" className={classes.dimmedText}>
                     {user.occupation}

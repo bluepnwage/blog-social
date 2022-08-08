@@ -59,5 +59,11 @@ export const useStyles = createStyles((theme) => ({
     "&:hover": {
       color: checkTheme(theme, theme.colors.blue[6], theme.colors.blue[4])
     }
+  },
+  sunIcon: {
+    color: theme.colors.yellow[4]
+  },
+  moonIcon: {
+    color: theme.colors.cyan[7]
   }
 }));

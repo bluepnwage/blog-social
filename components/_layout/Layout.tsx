@@ -1,6 +1,6 @@
 import Header from "./Header";
 import { MantineProvider, ColorSchemeProvider, Paper, ColorScheme } from "@mantine/core";
-import { checkTheme } from "util/theme";
+import { checkTheme } from "@util/theme";
 import { ReactNode, lazy, Suspense, useState, useEffect } from "react";
 
 const Footer = lazy(() => import("./Footer"));
@@ -13,14 +13,9 @@ export default function Layout({ children }: PropTypes) {
   const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
 
   useEffect(() => {
-    const [root] = Array.from(document.getElementsByTagName("html"));
-    if (colorScheme === "dark") {
-      root.classList.remove("light-mode");
-      root.classList.add("dark-mode");
-    } else {
-      root.classList.add("light-mode");
-      root.classList.remove("dark-mode");
-    }
+  const html = document.documentElement
+  html.className = colorScheme
+    
   }, [colorScheme]);
 
   const toggleTheme = () => {

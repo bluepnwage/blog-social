@@ -1,5 +1,5 @@
 import { Container, Group, ActionIcon, Image, Text } from "@mantine/core";
-import { BrandTwitter, BrandLinkedin, BrandGithub } from "tabler-icons-react";
+import { BrandTwitter, BrandGithub } from "tabler-icons-react";
 import { useStyles } from "./styles";
 import { memo } from "react";
 
@@ -14,13 +14,22 @@ function Footer() {
           <Text weight={600}>Blog Social</Text>
         </Group>
         <Group spacing={0} className={classes.links} position="right" noWrap>
-          <ActionIcon aria-label="View profile on Twitter" size="lg">
+          <ActionIcon
+            target={"_blank"}
+            href={"https://twitter.com/bluepnwage"}
+            component="a"
+            aria-label="View profile on Twitter"
+            size="lg"
+          >
             <BrandTwitter size={18} />
           </ActionIcon>
-          <ActionIcon aria-label="View profile on LinkedIn" size="lg">
-            <BrandLinkedin size={18} />
-          </ActionIcon>
-          <ActionIcon aria-label="View profile on Github" size="lg">
+          <ActionIcon
+            component="a"
+            href={"https://github.com/bluepnwage"}
+            target={"_blank"}
+            aria-label="View profile on Github"
+            size="lg"
+          >
             <BrandGithub size={18} />
           </ActionIcon>
         </Group>

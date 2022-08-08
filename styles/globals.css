@@ -8,11 +8,11 @@ body {
   position: relative;
 }
 
-.light-mode {
+.light {
   color-scheme: light;
 }
 
-.dark-mode {
+.dark {
   color-scheme: dark;
 }
 

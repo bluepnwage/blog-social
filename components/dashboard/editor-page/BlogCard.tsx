@@ -62,6 +62,11 @@ export function BlogCard({ blog, onDelete }: PropTypes) {
         publish.toggle();
         showNotification({ message: json.message, color: "green", title: "Success" });
         load.close();
+        await fetch("/api/revalidate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: blog.id })
+        });
       } else {
         const json = await res.json();
         throw new Error(json.message);

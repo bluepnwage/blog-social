@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Menu from "./Menu";
+import ThemeToggle from "./ThemeToggle";
 import { Image, Anchor, Group, Text, Button, Skeleton } from "@mantine/core";
 import { useStyles } from "./styles";
 import { useUser } from "@supabase/auth-helpers-react";
@@ -12,10 +13,12 @@ export default function Header() {
     <>
       <header className={cx("section-container", classes.navbar)}>
         <nav className={cx("container", classes.flex, classes.navContainer)}>
-          <Group spacing={5} mr={-100}>
-            <Image src={"/logo-icon.svg"} imageProps={{ loading: "lazy" }} height={48} width={48} alt={"Logo"} />
-            <Text className={classes.logo}>Blog Social</Text>
-          </Group>
+          <Link href={"/"}>
+            <Group spacing={5} mr={-100}>
+              <Image src={"/logo-icon.svg"} imageProps={{ loading: "lazy" }} height={48} width={48} alt={"Logo"} />
+              <Text className={classes.logo}>Blog Social</Text>
+            </Group>
+          </Link>
           <Group className={classes.mobile}>
             <Link passHref href={"/"}>
               <Anchor className={classes.navLinks} weight={600}>
@@ -30,11 +33,14 @@ export default function Header() {
           </Group>
           <Group className={classes.mobile} spacing={"lg"}>
             {!user && (
-              <Link href={"/signin"} passHref>
-                <Button component="a" variant="outline">
-                  Sign in
-                </Button>
-              </Link>
+              <>
+                <Link href={"/signin"} passHref>
+                  <Button component="a" variant="outline">
+                    Sign in
+                  </Button>
+                </Link>
+                <ThemeToggle />
+              </>
             )}
             <Suspense fallback={<Skeleton circle height={48} />}>{user && <Menu userID={user.id} />}</Suspense>
           </Group>

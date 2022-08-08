@@ -46,7 +46,6 @@ export default function SignIn() {
       const { error } = await supabaseClient.auth.signIn({ email, password });
 
       if (error) throw new Error(error.message);
-      alert("Please check your email for confirmation link");
       router.push("/");
     } catch (error) {
       if (error instanceof Error) {
