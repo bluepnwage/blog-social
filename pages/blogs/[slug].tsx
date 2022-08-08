@@ -48,18 +48,24 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const { data } = await supabaseClient
+  const { data, error: blogError } = await supabaseClient
     .from<BlogJoin>("blogs")
     .select(`*, profiles (*)`)
     .eq("id", params.slug as string)
     .single();
 
   const { profiles: user, ...blog } = data;
-  const { data: relatedBlogs } = await supabaseClient
+  const { data: relatedBlogs, error: relatedError } = await supabaseClient
     .from<BlogProps>("blogs")
     .select("*")
     .neq("id", params.slug as string)
     .limit(5);
+
+  if (blogError || relatedError) {
+    return {
+      notFound: true
+    };
+  }
 
   return {
     props: {

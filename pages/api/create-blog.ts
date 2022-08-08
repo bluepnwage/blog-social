@@ -8,10 +8,10 @@ const handler: NextApiHandler = async (req, res) => {
       case "POST": {
         const { title } = req.body;
         const { user } = await getUser({ req, res });
-        const test = await supabaseServerClient({ req, res })
+        const blog = await supabaseServerClient({ req, res })
           .from<Blog>("blogs")
           .insert([{ title, author_id: user.id }]);
-        return res.status(201).json({ id: test.body[0].id });
+        return res.status(201).json({ id: blog.body[0].id });
       }
       case "PUT": {
         const body = req.body;
@@ -25,7 +25,7 @@ const handler: NextApiHandler = async (req, res) => {
         if (blog.published) {
           await Promise.all([res.revalidate("/"), res.revalidate("/blogs"), res.revalidate(`/blogs/${id}`)]);
         }
-        return res.status(201).json({ updated: "updated", data });
+        return res.status(200).json({ updated: "updated", data });
       }
       case "DELETE": {
         const { id } = req.body;
@@ -35,7 +35,7 @@ const handler: NextApiHandler = async (req, res) => {
         return res.status(200).json({ message: "Deleted", data });
       }
       default: {
-        return res.status(400).json({ method: "NOt allowed" });
+        return res.status(405).json({ message: "Method not allowed" });
       }
     }
   } catch (error) {

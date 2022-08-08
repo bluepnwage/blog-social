@@ -14,10 +14,12 @@ export default function Header() {
       <header className={cx("section-container", classes.navbar)}>
         <nav className={cx("container", classes.flex, classes.navContainer)}>
           <Link href={"/"}>
-            <Group spacing={5} mr={-100}>
-              <Image src={"/logo-icon.svg"} imageProps={{ loading: "lazy" }} height={48} width={48} alt={"Logo"} />
-              <Text className={classes.logo}>Blog Social</Text>
-            </Group>
+            <a style={{ textDecoration: "none" }}>
+              <Group spacing={5}>
+                <Image src={"/logo-icon.svg"} imageProps={{ loading: "lazy" }} height={48} width={48} alt={"Logo"} />
+                <Text className={classes.logo}>Blog Social</Text>
+              </Group>
+            </a>
           </Link>
           <Group className={classes.mobile}>
             <Link passHref href={"/"}>

@@ -2,20 +2,22 @@ import Header from "./Header";
 import { MantineProvider, ColorSchemeProvider, Paper, ColorScheme } from "@mantine/core";
 import { checkTheme } from "@util/theme";
 import { ReactNode, lazy, Suspense, useState, useEffect } from "react";
+import { setCookie } from "cookies-next";
 
 const Footer = lazy(() => import("./Footer"));
 
 interface PropTypes {
   children: ReactNode;
+  colorScheme: ColorScheme;
 }
 
-export default function Layout({ children }: PropTypes) {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
+export default function Layout({ children, colorScheme: currentColorScheme }: PropTypes) {
+  const [colorScheme, setColorScheme] = useState<ColorScheme>(currentColorScheme);
 
   useEffect(() => {
-  const html = document.documentElement
-  html.className = colorScheme
-    
+    const html = document.documentElement;
+    html.className = colorScheme;
+    setCookie("mantine-color-scheme", colorScheme, { maxAge: 60 * 60 * 24 * 30 });
   }, [colorScheme]);
 
   const toggleTheme = () => {

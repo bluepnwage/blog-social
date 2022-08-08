@@ -20,7 +20,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       console.log(public_id);
       return res.status(200).json({ message: "Deleted" });
     } else {
-      res.status(401).json({ message: "Method not allowed" });
+      res.status(405).json({ message: "Method not allowed" });
     }
   } catch (error) {
     res.status(500).json({ message: "An error ocurred on the server" });

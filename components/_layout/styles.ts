@@ -44,7 +44,8 @@ export const useStyles = createStyles((theme) => ({
   logo: {
     fontSize: theme.fontSizes.xl,
     weight: 900,
-    fontFamily: "Segoe UI, sans-serif"
+    fontFamily: "Segoe UI, sans-serif",
+    color: checkTheme(theme, theme.colors.dark[8], theme.colors.dark[0])
   },
   mobile: {
     [theme.fn.smallerThan("sm")]: {
