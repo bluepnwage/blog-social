@@ -54,7 +54,7 @@ export default function EditorContainer({ blog }: PropTypes) {
       const res = await fetch("/api/create-blog", {
         method: "PUT",
         headers: { "Content-Type": "application" },
-        body: JSON.stringify({ ...form, id: blog.id, content, thumbnail: secure_url })
+        body: JSON.stringify({ ...form, id: blog.id, content, thumbnail: secure_url, published: blog.published })
       });
 
       if (res.ok) {
