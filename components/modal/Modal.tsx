@@ -1,5 +1,5 @@
 import { Avatar, Card, Text, ActionIcon, Group, Stack, Anchor, Divider } from "@mantine/core";
-import { BrandTwitch, BrandTwitter, BrandLinkedin, X } from "tabler-icons-react";
+import { BrandTwitter, BrandGithub, X } from "tabler-icons-react";
 import { useStyles } from "./styles";
 import { User } from "@interfaces/supabase";
 
@@ -16,22 +16,31 @@ export function Modal({ onClose, user }: PropTypes) {
         <Avatar
           size={"xl"}
           radius={50}
-          src={user?.avatar_url}
+          src={user.avatar_url}
           imageProps={{ loading: "lazy" }}
           alt={"User profile picture"}
         />
         <Text size={"xl"}>
-          {user?.first_name} {user?.last_name}
+          {user.first_name} {user.last_name}
         </Text>
         <Group>
-          <ActionIcon className={classes.icon}>
+          <ActionIcon
+            target={"_blank"}
+            component="a"
+            href={`https://twitter.com/${user.twitter}`}
+            aria-label="View profile on Twitter"
+            className={classes.icon}
+          >
             <BrandTwitter />
           </ActionIcon>
-          <ActionIcon className={classes.icon}>
-            <BrandTwitch />
-          </ActionIcon>
-          <ActionIcon className={classes.icon}>
-            <BrandLinkedin />
+          <ActionIcon
+            target={"_blank"}
+            component="a"
+            href={`https://github.com/${user.github}`}
+            aria-label="View profile on Github"
+            className={classes.icon}
+          >
+            <BrandGithub />
           </ActionIcon>
         </Group>
       </div>
@@ -46,31 +55,27 @@ export function Modal({ onClose, user }: PropTypes) {
           <Divider mt={"xs"} mb={"md"} />
         </Stack>
         <Stack spacing={"xs"}>
-          <Text component="strong">Personal website</Text>
-          <Anchor title={"Link to portfolio website"} href={user?.website} target={"_blank"}>
-            {user?.website}
+          <Text component="strong">Personal website:</Text>
+          <Anchor title={"Link to personal website"} href={user.website} target={"_blank"}>
+            {user.website}
           </Anchor>
         </Stack>
         <Stack>
           <Group position="apart">
             <Stack spacing={"xs"}>
-              <Text component="strong">Country</Text>
-              <Text>{user?.country}</Text>
+              <Text component="strong">Country:</Text>
+              <Text>{user.country}</Text>
             </Stack>
             <Stack spacing={"xs"}>
-              <Text component="strong">City</Text>
-              <Text>{user?.city}</Text>
+              <Text component="strong">City:</Text>
+              <Text>{user.city}</Text>
             </Stack>
           </Group>
         </Stack>
-        <Stack spacing={0}>
-          <Text>Blog stats</Text>
-          <Divider mt={"xs"} mb={"md"} />
+        <Stack>
+          <Text component="strong">Occupation:</Text>
+          <Text>{user.occupation}</Text>
         </Stack>
-        <Text component="strong">
-          Blogs: <Text component="span">23</Text>
-        </Text>
-        <Text>#2 most popular blogger</Text>
       </div>
     </Card>
   );
