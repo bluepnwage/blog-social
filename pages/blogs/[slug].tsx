@@ -2,7 +2,8 @@ import { Blog as BlogProps, BlogJoin, User } from "@interfaces/supabase";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import { BlogAuthor, BlogImage, BlogTitle, BlogArticle } from "@components/blog-page";
 import { GetStaticPaths, GetStaticProps } from "next";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
 const BlogStats = lazy(() => import("@components/blog-page/blog/BlogStats"));
 const RelatedBlogs = lazy(() => import("@components/blog-page/relatedBlogs/RelatedList"));
@@ -14,11 +15,43 @@ interface PropTypes {
 }
 
 export default function Blog({ blog, user, relatedBlogs }: PropTypes) {
+  const [mount, setMount] = useState(true);
+  const router = useRouter();
+  useEffect(() => {
+    const toggleMount = () => {
+      setMount(false);
+      setTimeout(() => {
+        setMount(true);
+      }, 100);
+    };
+    router.events.on("routeChangeComplete", toggleMount);
+    return () => {
+      router.events.off("routeChangeComplete", toggleMount);
+    };
+  }, []);
+
   return (
     <>
       <section className={"section-container"}>
         <Suspense fallback={null}>
-          <BlogAuthor slug={blog.slug} blogID={blog.id} user={user} uploadDate={blog.created_at} />
+          {mount && (
+            <BlogAuthor
+              readTime={blog.read_time}
+              slug={blog.slug}
+              blogID={blog.id}
+              user={user}
+              uploadDate={blog.created_at}
+            />
+          )}
+          {!mount && (
+            <BlogAuthor
+              readTime={blog.read_time}
+              slug={blog.slug}
+              blogID={blog.id}
+              user={user}
+              uploadDate={blog.created_at}
+            />
+          )}
         </Suspense>
         <BlogTitle heading={blog.heading} />
         <BlogImage description={blog.description} image={blog.thumbnail} />

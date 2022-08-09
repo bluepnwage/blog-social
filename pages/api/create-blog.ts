@@ -1,6 +1,7 @@
 import { NextApiHandler } from "next";
 import { withApiAuth, supabaseServerClient, getUser } from "@supabase/auth-helpers-nextjs";
 import { Blog } from "@interfaces/supabase";
+import sanitizeHtml from "sanitize-html";
 
 const handler: NextApiHandler = async (req, res) => {
   try {
@@ -17,10 +18,14 @@ const handler: NextApiHandler = async (req, res) => {
         const body = req.body;
         const { id, ...blog } = JSON.parse(body);
 
+        const words = sanitizeHtml(blog.content, { allowedTags: [], allowedAttributes: {} }).trim().split(/\s+/).length;
+        const readTime = Math.ceil(words / 225);
+
         const { data, error } = await supabaseServerClient({ req, res })
           .from<Blog>("blogs")
-          .update({ ...blog, updated_at: new Date() })
+          .update({ ...blog, updated_at: new Date(), read_time: readTime })
           .match({ id });
+
         if (error) throw new Error(error.message);
         if (blog.published) {
           await Promise.all([res.revalidate("/"), res.revalidate("/blogs"), res.revalidate(`/blogs/${id}`)]);

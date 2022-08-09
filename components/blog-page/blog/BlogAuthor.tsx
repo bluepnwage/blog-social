@@ -16,9 +16,10 @@ interface PropTypes {
   uploadDate: string;
   blogID: number;
   slug: string;
+  readTime: number;
 }
 
-export function BlogAuthor({ user: userData, uploadDate, blogID, slug }: PropTypes) {
+export function BlogAuthor({ user: userData, uploadDate, blogID, slug, readTime }: PropTypes) {
   const { user: author } = useUser(userData.id, { fallbackData: userData });
   const { user: auth, isLoading } = useAuth();
   const { user, userLoading } = useUser(!isLoading && auth ? auth?.id : null);
@@ -34,7 +35,7 @@ export function BlogAuthor({ user: userData, uploadDate, blogID, slug }: PropTyp
         break;
       }
     }
-  }, [isLoading]);
+  }, [isLoading, blogID]);
 
   const date = new Date(uploadDate);
 
@@ -104,7 +105,7 @@ export function BlogAuthor({ user: userData, uploadDate, blogID, slug }: PropTyp
                     {author.first_name} {author.last_name}
                   </Text>
                   <Text component="span" className={classes.dimmedText}>
-                    <Text component="time">{formatDate(date)}</Text> — 2 min read
+                    <Text component="time">{formatDate(date)}</Text> — {readTime} min read
                   </Text>
                 </Stack>
               </Group>

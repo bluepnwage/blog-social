@@ -17,7 +17,6 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       const { name: fileName } = path.parse(file);
       const public_id = `${folder}/${fileName}`;
       await cloudinary.uploader.destroy(public_id);
-      console.log(public_id);
       return res.status(200).json({ message: "Deleted" });
     } else {
       res.status(405).json({ message: "Method not allowed" });

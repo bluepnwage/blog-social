@@ -11,6 +11,7 @@ export interface Blog {
   published: boolean;
   slug: string;
   likes: number;
+  read_time: number;
 }
 
 export interface User {

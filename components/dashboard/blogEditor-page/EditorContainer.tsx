@@ -48,20 +48,34 @@ export default function EditorContainer({ blog }: PropTypes) {
 
     try {
       //Checks to see if there was a previous thumbnail and deletes it
-      if (thumbnail) await deletePrevThumbnail();
-      const { secure_url } = await uploadImage();
+      if (thumbnail && files.length > 0) await deletePrevThumbnail();
+      if (files.length > 0) {
+        const { secure_url } = await uploadImage();
 
-      const res = await fetch("/api/create-blog", {
-        method: "PUT",
-        headers: { "Content-Type": "application" },
-        body: JSON.stringify({ ...form, id: blog.id, content, thumbnail: secure_url, published: blog.published })
-      });
+        const res = await fetch("/api/create-blog", {
+          method: "PUT",
+          headers: { "Content-Type": "application" },
+          body: JSON.stringify({ ...form, id: blog.id, content, thumbnail: secure_url, published: blog.published })
+        });
 
-      if (res.ok) {
-        showNotification({ message: "Blog saved successfully", title: "Success", color: "green", icon: <Check /> });
-        setThubmnail(secure_url);
+        if (res.ok) {
+          showNotification({ message: "Blog saved successfully", title: "Success", color: "green", icon: <Check /> });
+          setThubmnail(secure_url);
+        } else {
+          throw new Error("An error ocurred while updated the blog");
+        }
       } else {
-        throw new Error("Something happened");
+        const res = await fetch("/api/create-blog", {
+          method: "PUT",
+          headers: { "Content-Type": "application" },
+          body: JSON.stringify({ ...form, id: blog.id, content, published: blog.published })
+        });
+
+        if (res.ok) {
+          showNotification({ message: "Blog saved successfully", title: "Success", color: "green", icon: <Check /> });
+        } else {
+          throw new Error("An error ocurred while updated the blog");
+        }
       }
     } catch (error) {
       showNotification({ message: error.message, color: "red", icon: <X />, title: "An error ocurred" });
