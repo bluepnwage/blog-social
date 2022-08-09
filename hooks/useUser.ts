@@ -35,6 +35,6 @@ export function useUser(key: string | null, options?: SWRConfiguration<User>) {
     revalidateOnFocus: false,
     dedupingInterval: 10000
   });
-  if ("error" in data) return { user: data.user, userLoading: !error && !data, mutate };
+  if (!error && data && "error" in data) return { user: data.user, userLoading: !error && !data, mutate };
   return { user: data, userLoading: !error && !data, mutate };
 }

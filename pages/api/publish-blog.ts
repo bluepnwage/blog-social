@@ -12,10 +12,13 @@ const handler: NextApiHandler = async (req, res) => {
         .eq("id", id);
 
       if (error) throw new Error(error.message);
+      if (published) {
+        await Promise.all([res.revalidate("/"), res.revalidate("/blogs"), res.revalidate(`/blogs/${id}`)]);
+      }
 
       res.json({ message: published ? "Blog published" : "Blog unpublished" });
     } else {
-      res.status(400).json({ message: "Method not allowed" });
+      res.status(405).json({ message: "Method not allowed" });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
