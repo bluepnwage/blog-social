@@ -1,5 +1,5 @@
 import { Blog, User } from "@interfaces/supabase";
-import { supabaseServerClient, withPageAuth } from "@supabase/auth-helpers-nextjs";
+import { supabaseServerClient, withPageAuth, getUser } from "@supabase/auth-helpers-nextjs";
 import { Layout } from "@components/dashboard";
 import { LikedList } from "@components/dashboard/likes-page/LikedList";
 
@@ -18,7 +18,20 @@ export default function Likes({ blogs }: PropTypes) {
 export const getServerSideProps = withPageAuth({
   redirectTo: "/signin",
   async getServerSideProps(context) {
-    const { data } = await supabaseServerClient(context).from<User>("profiles").select("likes").single();
+    const { user } = await getUser(context);
+    const { data } = await supabaseServerClient(context)
+      .from<User>("profiles")
+      .select("likes")
+      .eq("id", user.id)
+      .single();
+
+    if (!data.likes) {
+      return {
+        props: {
+          blogs: []
+        }
+      };
+    }
     const blogs = data.likes.map(async (id) => {
       return await supabaseServerClient(context).from<Blog>("blogs").select("*").eq("id", id).single();
     });
