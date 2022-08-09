@@ -30,23 +30,10 @@ export const getServerSideProps = withPageAuth({
   redirectTo: "/signin",
   async getServerSideProps(context) {
     const { user: userID } = await getUser(context);
-    const [blogData, { body: user, error }] = await Promise.all([
+    const [blogData, { body: user }] = await Promise.all([
       supabaseServerClient(context).from<Blog>("blogs").select("*").eq("author_id", userID.id),
       supabaseServerClient(context).from<User>("profiles").select("first_name").eq("id", userID.id).single()
     ]);
-    if (error) {
-      const { data } = await supabaseServerClient(context)
-        .from<User>("profiles")
-        .insert([{ id: userID.id }]);
-      const [user] = data;
-      return {
-        props: {
-          count: 0,
-          blogs: [],
-          name: user.first_name
-        }
-      };
-    }
 
     return {
       props: {
