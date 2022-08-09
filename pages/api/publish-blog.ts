@@ -12,9 +12,8 @@ const handler: NextApiHandler = async (req, res) => {
         .eq("id", id);
 
       if (error) throw new Error(error.message);
-      if (published) {
-        await Promise.all([res.revalidate("/"), res.revalidate("/blogs"), res.revalidate(`/blogs/${id}`)]);
-      }
+
+      await Promise.all([res.revalidate("/"), res.revalidate("/blogs"), res.revalidate(`/blogs/${id}`)]);
 
       res.json({ message: published ? "Blog published" : "Blog unpublished" });
     } else {

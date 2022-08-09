@@ -3,6 +3,7 @@ import { useRef, memo } from "react";
 import { useStyles } from "./styles";
 import { FeaturedBlog } from "./FeaturedBlog";
 import { BlogJoin } from "@interfaces/supabase";
+import { useMediaQuery } from "@mantine/hooks";
 import { Carousel } from "@mantine/carousel";
 import AutoPlay from "embla-carousel-autoplay";
 
@@ -30,8 +31,7 @@ function FeaturedList({ blogs }: PropTypes) {
           plugins={[autoplay.current]}
           onMouseEnter={autoplay.current.stop}
           onMouseLeave={autoplay.current.reset}
-          sx={{ width: "80%" }}
-          height={300}
+          className={classes.carousel}
           loop
           withControls={false}
           withIndicators

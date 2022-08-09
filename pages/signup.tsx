@@ -5,7 +5,6 @@ import {
   Group,
   Button,
   Divider,
-  Checkbox,
   Anchor,
   Stack,
   Card,
@@ -18,7 +17,7 @@ import twitter from "../public/twitter.png";
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
-import { AlertCircle } from "tabler-icons-react";
+import { AlertCircle, Check } from "tabler-icons-react";
 
 interface Form {
   email: string;
@@ -29,6 +28,7 @@ export default function SignUp() {
   const [form, setForm] = useState<Form>({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [supabaseError, setSupabaseError] = useState("");
+  const [signUpSuccess, setSuccess] = useState(false);
 
   const signUp = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,7 +41,7 @@ export default function SignUp() {
       const { error } = await supabaseClient.auth.signUp({ email, password });
       if (error) throw new Error(error.message);
 
-      alert("Please check your email for the confirmation link");
+      setSuccess(true);
     } catch (error) {
       if (error instanceof Error) {
         setSupabaseError(error.message);
@@ -61,7 +61,7 @@ export default function SignUp() {
       <Card style={{ width: "35%", position: "relative" }} radius="md" p="xl" withBorder>
         <LoadingOverlay visible={loading} />
         <Text size="lg" weight={500}>
-          Welcome to Mantine, sign up with
+          Welcome to Blog Social, sign up with
         </Text>
 
         <Group grow mb="md" mt="md">
@@ -100,7 +100,6 @@ export default function SignUp() {
               label="Password"
               placeholder="Your password"
             />
-            <Checkbox label="I accept terms and conditions" />
           </Stack>
 
           <Group position="apart" mt="xl">
@@ -116,6 +115,11 @@ export default function SignUp() {
         {supabaseError && (
           <Alert mt={"md"} icon={<AlertCircle />} title="An error ocurred" color="red">
             {supabaseError}
+          </Alert>
+        )}
+        {signUpSuccess && (
+          <Alert color={"green"} icon={<Check />} mt={"md"} title="Sign up successful">
+            Please check your email for the confirmation link to sign in.
           </Alert>
         )}
       </Card>

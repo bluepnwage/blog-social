@@ -4,6 +4,7 @@ import { BlogAuthor, BlogImage, BlogTitle, BlogArticle } from "@components/blog-
 import { GetStaticPaths, GetStaticProps } from "next";
 import { Suspense, lazy, useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 const BlogStats = lazy(() => import("@components/blog-page/blog/BlogStats"));
 const RelatedBlogs = lazy(() => import("@components/blog-page/relatedBlogs/RelatedList"));
@@ -32,6 +33,10 @@ export default function Blog({ blog, user, relatedBlogs }: PropTypes) {
 
   return (
     <>
+      <Head>
+        <title>Blog Social | Blogs</title>
+        <meta name="description" content={blog.description} />
+      </Head>
       <section className={"section-container"}>
         <Suspense fallback={null}>
           {mount && (
@@ -92,6 +97,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     .from<BlogProps>("blogs")
     .select("*")
     .neq("id", params.slug as string)
+    .eq("published", true)
     .limit(5);
 
   return {

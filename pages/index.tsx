@@ -3,7 +3,6 @@ import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import { GetStaticProps } from "next";
 import { BlogJoin } from "@interfaces/supabase";
 import FeaturedList from "@components/home/featuredBlogs/FeaturedList";
-
 interface PropTypes {
   featuredBlogs: BlogJoin[];
   latestBlogs: BlogJoin[];

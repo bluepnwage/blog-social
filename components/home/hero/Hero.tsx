@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Title, Image, Text, Button } from "@mantine/core";
 import { useStyles } from "./styles";
 
@@ -16,9 +17,11 @@ export function Hero() {
               dolor anim. Aliqua consequat incididunt velit Lorem id dolore adipisicing voluptate minim officia ad
               incididunt. Officia qui esse eiusmod mollit ad aliqua amet Lorem labore aute nulla minim ut magna.
             </Text>
-            <Button size="lg" radius={"xl"} variant="white">
-              Get Started
-            </Button>
+            <Link href={"/dashboard"} passHref>
+              <Button component="a" size="lg" radius={"xl"} variant="white">
+                Get Started
+              </Button>
+            </Link>
           </div>
           <figure className={classes.imageContainer}>
             <Image src={"/team-blog.svg"} width={"100%"} height={"100%"} alt={"Team working on blog"} />
