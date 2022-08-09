@@ -41,18 +41,18 @@ export function BlogAuthor({ user: userData, uploadDate, blogID, slug, readTime 
 
   const likeBlog = async () => {
     const [{ data: user }, { data: blog }] = await Promise.all([
-      await supabaseClient.from<User>("profiles").select("likes").single(),
-      await supabaseClient.from<Blog>("blogs").select("likes").eq("id", blogID).single()
+      supabaseClient.from<User>("profiles").select("likes").eq("id", auth?.id).single(),
+      supabaseClient.from<Blog>("blogs").select("likes").eq("id", blogID).single()
     ]);
 
     const prevLikes = user.likes ? user.likes : [];
 
     await Promise.all([
-      await supabaseClient
+      supabaseClient
         .from<User>("profiles")
         .update({ likes: [...prevLikes, blogID] }, { returning: "minimal" })
         .eq("id", auth?.id),
-      await supabaseClient
+      supabaseClient
         .from<Blog>("blogs")
         .update({ likes: blog.likes + 1 })
         .eq("id", blogID)
@@ -63,20 +63,19 @@ export function BlogAuthor({ user: userData, uploadDate, blogID, slug, readTime 
 
   const unlikeBlog = async () => {
     const [{ data: user }, { data: blog }] = await Promise.all([
-      await supabaseClient.from<User>("profiles").select("likes").single(),
-      await supabaseClient.from<Blog>("blogs").select("likes").eq("id", blogID).single()
+      supabaseClient.from<User>("profiles").select("likes").eq("id", auth?.id).single(),
+      supabaseClient.from<Blog>("blogs").select("likes").eq("id", blogID).single()
     ]);
 
     const filteredLikes = user.likes ? user.likes.filter((id) => id != blogID) : [];
 
-    const [, { error }] = await Promise.all([
-      await supabaseClient.from<User>("profiles").update({ likes: filteredLikes }).eq("id", auth?.id),
-      await supabaseClient
+    await Promise.all([
+      supabaseClient.from<User>("profiles").update({ likes: filteredLikes }).eq("id", auth?.id),
+      supabaseClient
         .from<Blog>("blogs")
         .update({ likes: blog.likes - 1 })
         .eq("id", blogID)
     ]);
-    if (error) alert(error.message);
     setLiked(false);
     mutate(slug);
   };
