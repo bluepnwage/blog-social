@@ -1,6 +1,6 @@
 import Link from "next/link";
 import google from "../public/google.png";
-import twitter from "../public/twitter.png";
+import github from "../public/github.png";
 import {
   TextInput,
   Text,
@@ -62,12 +62,16 @@ export default function SignIn() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const signInWithGithub = async () => {
+    await supabaseClient.auth.signIn({ provider: "github" });
+  };
+
   return (
     <div style={{ justifyContent: "center", height: "90vh" }} className="section-container">
       <Card style={{ width: "35%", position: "relative" }} radius="md" p="xl" withBorder>
         <LoadingOverlay visible={loading} />
         <Text size="lg" weight={500}>
-          Welcome to Mantine, login with
+          Welcome to Blog Social, login with
         </Text>
         <Group grow mb="md" mt="md">
           <Button variant="default">
@@ -76,10 +80,10 @@ export default function SignIn() {
               <Text>Google</Text>
             </Group>{" "}
           </Button>
-          <Button variant="default">
+          <Button onClick={signInWithGithub} variant="default">
             <Group spacing={5}>
-              <Image src={twitter.src} imageProps={{ loading: "lazy" }} width={12} height={12} alt="Twitter logo" />
-              <Text>Twitter</Text>
+              <Image src={github.src} imageProps={{ loading: "lazy" }} width={12} height={12} alt="Twitter logo" />
+              <Text>Github</Text>
             </Group>
           </Button>
         </Group>
