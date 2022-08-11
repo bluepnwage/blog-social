@@ -24,7 +24,7 @@ export default function CreateBlogModal({ onClose, opened }: PropTypes) {
       });
       if (res.ok) {
         const json = await res.json();
-        router.push(`/dashboard/bluepnwage/editor/${json.id}`);
+        router.push(`/dashboard/editor/${json.id}`);
       }
     } catch (error) {
       if (error instanceof Error) {

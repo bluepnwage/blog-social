@@ -1,16 +1,21 @@
+import Link from "next/link";
 import { Card, Text, Title, Anchor, Image, Group, Avatar, Stack } from "@mantine/core";
 import { useStyles } from "./styles";
 import { formatDate } from "@util/formatDate";
+import { User } from "@interfaces/supabase";
+
 interface PropTypes {
   heading: string;
   description: string;
   image: string;
   created_at: string;
+  user: User;
 }
 
-export function PreviewCard({ description, heading, image, created_at }: PropTypes) {
+export function PreviewCard({ description, heading, image, created_at, user }: PropTypes) {
   const { classes } = useStyles();
   const date = new Date(created_at);
+  const infoFilled = user.first_name && user.last_name ? true : false;
   return (
     <>
       <Card className={classes.card}>
@@ -20,14 +25,11 @@ export function PreviewCard({ description, heading, image, created_at }: PropTyp
             width={"100%"}
             height={"100%"}
             imageProps={{ loading: "lazy", onLoad: () => URL.revokeObjectURL(image) }}
-            alt={"Philipsburg"}
+            alt={""}
           />
         </Card.Section>
-        <Text component="strong">
-          Travel —{" "}
-          <Text component="time" weight={400} color={"dimmed"}>
-            {formatDate(date)}
-          </Text>
+        <Text component="time" weight={400} color={"dimmed"}>
+          {formatDate(date)}
         </Text>
         <Title mb={"md"} order={3}>
           {heading}
@@ -35,24 +37,36 @@ export function PreviewCard({ description, heading, image, created_at }: PropTyp
         <Text mb={"md"} component="p">
           {description}
         </Text>
-
         <Anchor>Read article</Anchor>
         <Group mt={"md"}>
           <Avatar
             imageProps={{ loading: "lazy" }}
-            src={"/bluepnwage.jpg"}
+            src={user.avatar_url}
             radius={"xl"}
             size={"md"}
             alt={"Profile picture for author"}
           />
-          <Stack spacing={0}>
-            <Text size="sm" component="strong">
-              Agis Carty
-            </Text>
-            <Text size="sm" component="span" color={"dimmed"}>
-              Front-end Developer
-            </Text>
-          </Stack>
+          {infoFilled && (
+            <Stack spacing={0}>
+              <Text size="sm" component="strong">
+                {user.first_name} {user.last_name}
+              </Text>
+              <Text size="sm" component="span" color={"dimmed"}>
+                {user.occupation}
+              </Text>
+            </Stack>
+          )}
+          {!infoFilled && (
+            <>
+              <Text component="p">
+                Fill out your{" "}
+                <Link href={"/dashboard/profile"} passHref>
+                  <Anchor>profile</Anchor>
+                </Link>{" "}
+                so your name can be displayed here
+              </Text>
+            </>
+          )}
         </Group>
       </Card>
     </>

@@ -2,6 +2,8 @@ import { Blog } from "@interfaces/supabase";
 import { withApiAuth, supabaseServerClient } from "@supabase/auth-helpers-nextjs";
 import { NextApiHandler } from "next";
 
+const development = process.env.NODE_ENV === "development";
+
 const handler: NextApiHandler = async (req, res) => {
   try {
     if (req.method === "PUT") {
@@ -12,8 +14,9 @@ const handler: NextApiHandler = async (req, res) => {
         .eq("id", id);
 
       if (error) throw new Error(error.message);
-
-      await Promise.all([res.revalidate("/"), res.revalidate("/blogs"), res.revalidate(`/blogs/${id}`)]);
+      if (!development) {
+        await Promise.all([res.revalidate("/"), res.revalidate("/blogs"), res.revalidate(`/blogs/${id}`)]);
+      }
 
       res.json({ message: published ? "Blog published" : "Blog unpublished" });
     } else {

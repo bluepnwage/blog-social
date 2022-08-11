@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import { Layout } from "@components/dashboard";
 import { EditorLoading } from "@components/dashboard/blogEditor-page/EditorLoading";
 import { withPageAuth, supabaseServerClient, getUser } from "@supabase/auth-helpers-nextjs";
-import { Blog } from "@interfaces/supabase";
+import { Blog, BlogJoin, User } from "@interfaces/supabase";
 
 const EditorContainer = dynamic(() => import("@components/dashboard/blogEditor-page/EditorContainer"), {
   ssr: false,
@@ -11,14 +11,14 @@ const EditorContainer = dynamic(() => import("@components/dashboard/blogEditor-p
 
 interface PropTypes {
   blog: Blog;
-  userID: string;
+  user: User;
 }
 
-export default function BlogProject({ blog, userID }: PropTypes) {
+export default function BlogProject({ blog, user }: PropTypes) {
   return (
     <>
       <Layout>
-        <EditorContainer blog={blog} userID={userID} />
+        <EditorContainer blog={blog} user={user} />
       </Layout>
     </>
   );
@@ -29,8 +29,8 @@ export const getServerSideProps = withPageAuth({
   async getServerSideProps(context) {
     const { user } = await getUser(context);
     const { body, error } = await supabaseServerClient(context)
-      .from<Blog>("blogs")
-      .select("*")
+      .from<BlogJoin>("blogs")
+      .select("*, profiles(*)")
       .eq("author_id", user.id)
       .eq("id", parseInt(context.params.id as string))
       .single();
@@ -40,10 +40,11 @@ export const getServerSideProps = withPageAuth({
         notFound: true
       };
     }
+    const { profiles, ...blog } = body;
     return {
       props: {
-        blog: body,
-        userID: user.id
+        blog: blog,
+        user: profiles
       }
     };
   }

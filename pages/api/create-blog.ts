@@ -3,6 +3,8 @@ import { withApiAuth, supabaseServerClient, getUser } from "@supabase/auth-helpe
 import { Blog } from "@interfaces/supabase";
 import sanitizeHtml from "sanitize-html";
 
+const development = process.env.NODE_ENV === "development";
+
 const handler: NextApiHandler = async (req, res) => {
   try {
     switch (req.method) {
@@ -27,7 +29,7 @@ const handler: NextApiHandler = async (req, res) => {
           .match({ id });
 
         if (error) throw new Error(error.message);
-        if (blog.published) {
+        if (blog.published && !development) {
           await Promise.all([res.revalidate("/"), res.revalidate("/blogs"), res.revalidate(`/blogs/${id}`)]);
         }
         return res.status(200).json({ updated: "updated", data });
@@ -36,7 +38,10 @@ const handler: NextApiHandler = async (req, res) => {
         const { id } = req.body;
         const { data, error } = await supabaseServerClient({ req, res }).from<Blog>("blogs").delete().match({ id });
         if (error) throw new Error(error.message);
-        await Promise.all([res.revalidate("/"), res.revalidate("/blogs"), res.revalidate(`/blogs/${id}`)]);
+        const [blog] = data;
+        if (blog.published && !development) {
+          await Promise.all([res.revalidate("/"), res.revalidate("/blogs"), res.revalidate(`/blogs/${id}`)]);
+        }
         return res.status(200).json({ message: "Deleted", data });
       }
       default: {

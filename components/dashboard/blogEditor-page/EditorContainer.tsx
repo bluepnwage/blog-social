@@ -6,7 +6,7 @@ import { useStyles } from "./styles";
 import { ImageUpload } from "./ImageUpload";
 import { PreviewCard } from "./PreviewCard";
 import { ImagePreview } from "./ImagePreview";
-import { Blog } from "@interfaces/supabase";
+import { Blog, User } from "@interfaces/supabase";
 import { showNotification } from "@mantine/notifications";
 import { CloudinaryResponse } from "@interfaces/cloudinary";
 
@@ -17,10 +17,10 @@ interface Form {
 
 interface PropTypes {
   blog: Blog;
-  userID: string;
+  user: User;
 }
 
-export default function EditorContainer({ blog }: PropTypes) {
+export default function EditorContainer({ blog, user }: PropTypes) {
   const [form, setForm] = useState<Form>({
     heading: blog.heading,
     description: blog.description
@@ -33,7 +33,7 @@ export default function EditorContainer({ blog }: PropTypes) {
   const { classes, cx } = useStyles();
 
   const previewDisabled = !form.heading || !form.description || (files.length === 0 && !thumbnail);
-  const buttonDisabled = !form.heading || !form.description || (files.length === 0 && !thumbnail) || !content;
+  const buttonDisabled = !form.heading || !form.description || !content || (files.length === 0 && !thumbnail);
 
   const handleChange = (e: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { value, name } = e.currentTarget;
@@ -164,7 +164,7 @@ export default function EditorContainer({ blog }: PropTypes) {
             </Stack>
           </Tabs.Panel>
           <Tabs.Panel className={cx(classes.flex, classes.previewTab)} pt={"md"} value="preview">
-            <PreviewCard created_at={blog.created_at} {...form} image={imageURL || thumbnail} />
+            <PreviewCard user={user} created_at={blog.created_at} {...form} image={imageURL || thumbnail} />
           </Tabs.Panel>
         </Tabs>
       </div>

@@ -1,6 +1,7 @@
-import { ActionIcon, CopyButton, Group, Indicator, Tooltip } from "@mantine/core";
+import { ActionIcon, CopyButton, Group, Indicator, Stack, Text, Tooltip } from "@mantine/core";
 import { Check, HeartPlus, Share } from "tabler-icons-react";
-import { formatNum } from "util/formatNum";
+import { formatNum } from "@util/formatNum";
+import { formatDate } from "@util/formatDate";
 import { useStyles } from "./styles";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import { Blog } from "@interfaces/supabase";
@@ -9,6 +10,7 @@ import useSWR from "swr";
 interface PropTypes {
   likes: number;
   slug: string;
+  lastUpdate: string;
 }
 
 const fetcher = async (key: string) => {
@@ -17,12 +19,13 @@ const fetcher = async (key: string) => {
   return data.likes;
 };
 
-export default function BlogStats({ likes, slug }: PropTypes) {
+export default function BlogStats({ likes, slug, lastUpdate }: PropTypes) {
   const { data } = useSWR(slug, fetcher, { fallbackData: likes });
   const { classes, theme } = useStyles();
+  const date = new Date(lastUpdate);
   return (
-    <>
-      <Group mb={theme.spacing.xl * 2.5} position="apart" className={classes.container}>
+    <Stack mb={theme.spacing.xl * 3} className={classes.container}>
+      <Group position="apart">
         <Indicator color={"red"} size={16} inline label={formatNum(data)}>
           <ActionIcon title="Total likes" color={"red"}>
             <HeartPlus />
@@ -40,6 +43,10 @@ export default function BlogStats({ likes, slug }: PropTypes) {
           }}
         </CopyButton>
       </Group>
-    </>
+      <Group>
+        <Text component="strong">Last update:</Text>
+        <Text component="time">{formatDate(date)}</Text>
+      </Group>
+    </Stack>
   );
 }

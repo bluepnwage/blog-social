@@ -20,6 +20,7 @@ export function BlogCard({ blog, onDelete }: PropTypes) {
   const [published, publish] = useDisclosure(blog.published);
 
   const date = new Date(blog.created_at);
+  const publishable = blog.heading && blog.content && blog.description && blog.thumbnail ? true : false;
 
   const deleteBlog = async () => {
     load.open();
@@ -105,9 +106,11 @@ export function BlogCard({ blog, onDelete }: PropTypes) {
           </Link>
         </Group>
         <Group position="apart">
-          <Button onClick={toggleBlog} size="sm" variant="light" color={published ? "orange" : "green"}>
-            {published ? "Unpublish" : "Publish"}
-          </Button>
+          {publishable && (
+            <Button onClick={toggleBlog} size="sm" variant="light" color={published ? "orange" : "green"}>
+              {published ? "Unpublish" : "Publish"}
+            </Button>
+          )}
           <Text component="time">{formatDate(date)}</Text>
         </Group>
       </Card>

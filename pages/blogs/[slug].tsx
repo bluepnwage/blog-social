@@ -62,7 +62,7 @@ export default function Blog({ blog, user, relatedBlogs }: PropTypes) {
         <BlogImage description={blog.description} image={blog.thumbnail} />
         <BlogArticle content={blog.content} />
         <Suspense fallback={null}>
-          <BlogStats slug={blog.slug} likes={blog.likes} />
+          <BlogStats lastUpdate={blog.updated_at} slug={blog.slug} likes={blog.likes} />
         </Suspense>
       </section>
       <Suspense fallback={null}>

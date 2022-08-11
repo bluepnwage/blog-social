@@ -21,7 +21,8 @@ export const useStyles = createStyles((theme) => ({
   },
   imageContainer: {
     aspectRatio: " 16 / 9",
-    marginBottom: theme.spacing.sm
+    marginBottom: theme.spacing.sm,
+    overflow: "hidden"
   },
   previewTab: {
     justifyContent: "center"
