@@ -1,4 +1,4 @@
-import { ActionIcon, CopyButton, Group, Indicator, Stack, Text, Tooltip } from "@mantine/core";
+import { ThemeIcon, CopyButton, Group, Indicator, Stack, Text, Tooltip, ActionIcon } from "@mantine/core";
 import { Check, HeartPlus, Share } from "tabler-icons-react";
 import { formatNum } from "@util/formatNum";
 import { formatDate } from "@util/formatDate";
@@ -27,9 +27,9 @@ export default function BlogStats({ likes, slug, lastUpdate }: PropTypes) {
     <Stack mb={theme.spacing.xl * 3} className={classes.container}>
       <Group position="apart">
         <Indicator color={"red"} size={16} inline label={formatNum(data)}>
-          <ActionIcon title="Total likes" color={"red"}>
+          <ThemeIcon variant={"light"} title="Total likes" color={"red"}>
             <HeartPlus />
-          </ActionIcon>
+          </ThemeIcon>
         </Indicator>
         <CopyButton timeout={2000} value={typeof window !== "undefined" ? location.href : ""}>
           {({ copied, copy }) => {

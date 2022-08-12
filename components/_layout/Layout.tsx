@@ -1,5 +1,5 @@
 import Header from "./Header";
-import { MantineProvider, ColorSchemeProvider, Paper, ColorScheme } from "@mantine/core";
+import { MantineProvider, ColorSchemeProvider, Paper, ColorScheme, useMantineTheme } from "@mantine/core";
 import { checkTheme } from "@util/theme";
 import { ReactNode, lazy, Suspense, useState, useEffect } from "react";
 import { setCookie } from "cookies-next";
@@ -13,6 +13,7 @@ interface PropTypes {
 
 export default function Layout({ children, colorScheme: currentColorScheme }: PropTypes) {
   const [colorScheme, setColorScheme] = useState<ColorScheme>(currentColorScheme);
+  const theme = useMantineTheme();
 
   useEffect(() => {
     const html = document.documentElement;
@@ -33,7 +34,8 @@ export default function Layout({ children, colorScheme: currentColorScheme }: Pr
           theme={{
             colorScheme,
             fontFamily: "PT Sans, Segoe UI, serif",
-            headings: { fontFamily: "Segoe UI, sans-serif" }
+            headings: { fontFamily: "Segoe UI, sans-serif" },
+            breakpoints: { ...theme.breakpoints, sm: 820, md: 1100 }
           }}
         >
           <Header />

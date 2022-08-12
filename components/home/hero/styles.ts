@@ -3,7 +3,7 @@ import { checkTheme } from "util/theme";
 
 export const useStyles = createStyles((theme) => ({
   heroContainer: {
-    height: "85vh",
+    height: "calc(100vh - 70px)",
     color: theme.white,
     position: "relative",
     justifyContent: "center",
@@ -17,8 +17,8 @@ export const useStyles = createStyles((theme) => ({
   },
   imageContainer: {
     aspectRatio: "16 / 9",
-    flex: "2 1 45%",
-    [theme.fn.smallerThan("sm")]: {
+    flex: "1 1 45%",
+    [theme.fn.smallerThan("md")]: {
       display: "none"
     }
   },

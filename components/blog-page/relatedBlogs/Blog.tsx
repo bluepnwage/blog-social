@@ -21,7 +21,7 @@ export function Blog({ children, blog }: PropTypes) {
             {formatDate(date)}
           </Text>
           <Title mt={"xs"} mb={"md"} order={3}>
-            {blog.title}
+            {blog.heading}
           </Title>
           <Text mb={"sm"} component="p">
             {blog.description}

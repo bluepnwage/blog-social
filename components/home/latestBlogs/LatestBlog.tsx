@@ -22,13 +22,7 @@ export function LatestBlog({ blog, user: userData }: PropTypes) {
     <Suspense fallback={null}>
       <Card className={cx(classes.card, classes.flexColumn)}>
         <Card.Section component={"figure"} className={classes.imageContainer}>
-          <Image
-            src={blog.thumbnail}
-            width={"100%"}
-            height={200}
-            imageProps={{ loading: "lazy" }}
-            alt={""}
-          />
+          <Image src={blog.thumbnail} width={"100%"} height={"100%"} imageProps={{ loading: "lazy" }} alt={""} />
         </Card.Section>
         <div className={cx(classes.flexColumn, classes.descriptionContainer)}>
           <div>

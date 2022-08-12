@@ -28,6 +28,9 @@ export const useStyles = createStyles((theme) => ({
     width: "80%",
     [theme.fn.smallerThan("sm")]: {
       height: 500
+    },
+    [`${theme.fn.largerThan(700)} and (max-width: ${theme.breakpoints.sm}px)`]: {
+      height: 600
     }
   }
 }));
