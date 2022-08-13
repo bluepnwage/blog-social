@@ -19,6 +19,7 @@ const fetcher = async (id: string) => {
 
 export function Blog({ children, blog: blogData }: PropTypes) {
   const { data: blog } = useSWR(`${blogData.id}`, fetcher, { fallbackData: blogData, revalidateOnFocus: false });
+
   const { classes, cx } = useStyles();
   const date = new Date(blog.created_at);
   return (
