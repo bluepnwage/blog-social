@@ -1,5 +1,4 @@
 import Link from "next/link";
-import google from "../public/google.png";
 import github from "../public/github.png";
 import {
   TextInput,
@@ -19,7 +18,6 @@ import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/router";
 import { AlertCircle } from "tabler-icons-react";
-import { Provider } from "@supabase/supabase-js";
 
 interface Form {
   email: string;
@@ -63,13 +61,8 @@ export default function SignIn() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const signInWithProvider = async (provider: Provider) => {
-    const { user } = await supabaseClient.auth.signIn({ provider });
-    await fetch("/api/test", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ user })
-    });
+  const signInWithGithub = async () => {
+    await supabaseClient.auth.signIn({ provider: "github" });
   };
 
   return (
@@ -79,14 +72,8 @@ export default function SignIn() {
         <Text size="lg" weight={500}>
           Welcome to Blog Social, login with
         </Text>
-        <Group grow mb="md" mt="md">
-          <Button onClick={async () => await signInWithProvider("google")} variant="default">
-            <Group spacing={5}>
-              <Image src={google.src} imageProps={{ loading: "lazy" }} width={12} height={12} alt="Google logo" />
-              <Text>Google</Text>
-            </Group>{" "}
-          </Button>
-          <Button onClick={async () => await signInWithProvider("github")} variant="default">
+        <Group grow mb="md" position="center" mt="md">
+          <Button onClick={async () => await signInWithGithub()} variant="default">
             <Group spacing={5}>
               <Image src={github.src} imageProps={{ loading: "lazy" }} width={12} height={12} alt="Twitter logo" />
               <Text>Github</Text>

@@ -4,13 +4,21 @@ import { useStyles } from "./styles";
 import { ReactNode } from "react";
 import { Blog as BlogProps } from "@interfaces/supabase";
 import { formatDate } from "@util/formatDate";
+import useSWR from "swr";
+import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 
 interface PropTypes {
   children: ReactNode;
   blog: BlogProps;
 }
 
-export function Blog({ children, blog }: PropTypes) {
+const fetcher = async (id: string) => {
+  const { data } = await supabaseClient.from<BlogProps>("blogs").select("*").eq("id", id).single();
+  return data;
+};
+
+export function Blog({ children, blog: blogData }: PropTypes) {
+  const { data: blog } = useSWR(`${blogData.id}`, fetcher, { fallbackData: blogData, revalidateOnFocus: false });
   const { classes, cx } = useStyles();
   const date = new Date(blog.created_at);
   return (

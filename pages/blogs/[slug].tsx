@@ -34,7 +34,7 @@ export default function Blog({ blog, user, relatedBlogs }: PropTypes) {
   return (
     <>
       <Head>
-        <title>Blog Social | Blogs</title>
+        <title>Blog Social | {blog.heading}</title>
         <meta name="description" content={blog.description} />
       </Head>
       <section className={"section-container"}>

@@ -15,10 +15,10 @@ async function fetcher(id: string) {
 }
 
 export function useUser(key: string | null, options?: SWRConfiguration<User>) {
-  const { data, error, mutate } = useSWR<User>(key, fetcher, {
+  const { data, mutate } = useSWR<User>(key, fetcher, {
     ...options,
     revalidateOnFocus: false,
     dedupingInterval: 10000
   });
-  return { user: data, userLoading: !error && !data, mutate };
+  return { user: data, userLoading: !data, mutate };
 }
