@@ -133,8 +133,6 @@ export default function EditorContainer({ blog, user }: PropTypes) {
     return file ? URL.createObjectURL(file) : "";
   }, [files]);
 
-  const edited = blog.content !== content;
-
   return (
     <>
       <div className={cx(classes.container, classes.flex)}>
@@ -170,7 +168,13 @@ export default function EditorContainer({ blog, user }: PropTypes) {
             </BlogInfo>
           </Tabs.Panel>
           <Tabs.Panel style={{ position: "relative" }} pt={"md"} value="editor">
-            <TextEditor isEdited={edited} published={published} id={blog.id} content={content} onChange={setContent} />
+            <TextEditor
+              originalContent={blog.content}
+              published={published}
+              id={blog.id}
+              content={content}
+              onChange={setContent}
+            />
           </Tabs.Panel>
           <Tabs.Panel className={cx(classes.flex, classes.previewTab)} pt={"md"} value="preview">
             <PreviewCard user={user} created_at={blog.created_at} {...form} image={imageURL || thumbnail} />

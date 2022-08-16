@@ -11,10 +11,10 @@ interface PropTypes {
   onChange: Dispatch<SetStateAction<string>>;
   id: number;
   published: boolean;
-  isEdited: boolean;
+  originalContent: string;
 }
 
-export function TextEditor({ content, onChange, id, published, isEdited }: PropTypes) {
+export function TextEditor({ content, onChange, id, published, originalContent }: PropTypes) {
   const [autosave, setSaving] = useState({ loading: false, success: false });
   const [loading, setLoading] = useState(false);
   const [firstMount, setFirstMount] = useState(true);
@@ -58,7 +58,7 @@ export function TextEditor({ content, onChange, id, published, isEdited }: PropT
   const handleClick = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/revalidate", {
+      const res = await fetch("/api/publish-blog", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id })
@@ -76,6 +76,8 @@ export function TextEditor({ content, onChange, id, published, isEdited }: PropT
     }
   };
 
+  const edited = debounced !== originalContent;
+
   return (
     <>
       <RichTextEditor stickyOffset={70} value={content} onChange={onChange} />
@@ -88,7 +90,7 @@ export function TextEditor({ content, onChange, id, published, isEdited }: PropT
           </Group>
         )}
       </div>
-      {published && isEdited && (
+      {published && edited && (
         <Button loading={loading} color={"green"} onClick={handleClick} mt={"md"}>
           Publish changes
         </Button>
