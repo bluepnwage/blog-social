@@ -11,14 +11,14 @@ const EditorContainer = dynamic(() => import("@components/dashboard/blogEditor-p
 
 interface PropTypes {
   blog: Blog;
-  user: User;
+  profiles: User;
 }
 
-export default function BlogProject({ blog, user }: PropTypes) {
+export default function BlogProject({ blog, profiles }: PropTypes) {
   return (
     <>
       <Layout>
-        <EditorContainer blog={blog} user={user} />
+        <EditorContainer blog={blog} user={profiles} />
       </Layout>
     </>
   );
@@ -27,11 +27,11 @@ export default function BlogProject({ blog, user }: PropTypes) {
 export const getServerSideProps = withPageAuth({
   redirectTo: "/signin",
   async getServerSideProps(context) {
-    const { user } = await getUser(context);
+    const { user: userData } = await getUser(context);
     const { body, error } = await supabaseServerClient(context)
       .from<BlogJoin>("blogs")
       .select("*, profiles(*)")
-      .eq("author_id", user.id)
+      .eq("author_id", userData.id)
       .eq("id", parseInt(context.params.id as string))
       .single();
 
@@ -40,11 +40,12 @@ export const getServerSideProps = withPageAuth({
         notFound: true
       };
     }
+
     const { profiles, ...blog } = body;
     return {
       props: {
         blog: blog,
-        user: profiles
+        profiles
       }
     };
   }

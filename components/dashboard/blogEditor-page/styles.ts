@@ -6,7 +6,8 @@ export const useStyles = createStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     width: "80%",
-    marginBottom: theme.spacing.xl * 2
+    marginBottom: theme.spacing.xl * 2,
+    position: "relative"
   },
 
   flex: {
@@ -32,5 +33,13 @@ export const useStyles = createStyles((theme) => ({
     height: "100%",
     overflow: "hidden",
     borderRadius: theme.radius.md
+  },
+  loader: {
+    position: "fixed",
+    bottom: 30,
+    right: 50
+  },
+  successIcon: {
+    color: checkTheme(theme, theme.colors.green[7], theme.colors.green[4])
   }
 }));

@@ -19,6 +19,12 @@ const handler: NextApiHandler = async (req, res) => {
       }
 
       res.json({ message: published ? "Blog published" : "Blog unpublished" });
+    } else if (req.method === "POST") {
+      const { id } = req.body;
+      if (!development) {
+        await Promise.all([res.revalidate("/"), res.revalidate("/blogs"), res.revalidate(`/blogs/${id}`)]);
+      }
+      res.status(200).json({ message: "Blog Published" });
     } else {
       res.status(405).json({ message: "Method not allowed" });
     }

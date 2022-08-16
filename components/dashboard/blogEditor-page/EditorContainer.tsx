@@ -1,14 +1,18 @@
-import { RichTextEditor } from "@mantine/rte";
 import { FormEvent, useState, useMemo } from "react";
-import { Title, TextInput, Button, Stack, Textarea, Tabs, LoadingOverlay, SimpleGrid } from "@mantine/core";
-import { FilePencil, BrandHtml5, Check, X } from "tabler-icons-react";
+import { Title, Tabs } from "@mantine/core";
+import { FilePencil, BrandHtml5, Check, X, InfoCircle, File, Upload } from "tabler-icons-react";
 import { useStyles } from "./styles";
 import { ImageUpload } from "./ImageUpload";
 import { PreviewCard } from "./PreviewCard";
 import { ImagePreview } from "./ImagePreview";
+import { TextEditor } from "./TextEditor";
+import { BlogPreview } from "./BlogPreview";
+import { Publish } from "./Publish";
 import { Blog, User } from "@interfaces/supabase";
 import { showNotification } from "@mantine/notifications";
 import { CloudinaryResponse } from "@interfaces/cloudinary";
+import { BlogInfo } from "./BlogInfo";
+import { useDisclosure } from "@mantine/hooks";
 
 interface Form {
   heading: string;
@@ -27,9 +31,8 @@ export default function EditorContainer({ blog, user }: PropTypes) {
   });
   const [content, setContent] = useState(blog.content);
   const [files, setFile] = useState<File[]>([]);
-  const [loading, setLoading] = useState(false);
   const [thumbnail, setThubmnail] = useState(blog.thumbnail);
-
+  const [published, handler] = useDisclosure(blog.published);
   const { classes, cx } = useStyles();
 
   const previewDisabled = !form.heading || !form.description || (files.length === 0 && !thumbnail);
@@ -43,9 +46,7 @@ export default function EditorContainer({ blog, user }: PropTypes) {
     }));
   };
 
-  const handleSubmit = async () => {
-    setLoading(true);
-
+  const submit = async () => {
     try {
       //Checks to see if there was a previous thumbnail and deletes it
       if (thumbnail && files.length > 0) await deletePrevThumbnail();
@@ -55,7 +56,7 @@ export default function EditorContainer({ blog, user }: PropTypes) {
         const res = await fetch("/api/create-blog", {
           method: "PUT",
           headers: { "Content-Type": "application" },
-          body: JSON.stringify({ ...form, id: blog.id, content, thumbnail: secure_url, published: blog.published })
+          body: JSON.stringify({ ...form, id: blog.id, content, thumbnail: secure_url, published })
         });
 
         if (res.ok) {
@@ -68,7 +69,7 @@ export default function EditorContainer({ blog, user }: PropTypes) {
         const res = await fetch("/api/create-blog", {
           method: "PUT",
           headers: { "Content-Type": "application" },
-          body: JSON.stringify({ ...form, id: blog.id, content, published: blog.published })
+          body: JSON.stringify({ ...form, id: blog.id, content, published })
         });
 
         if (res.ok) {
@@ -79,8 +80,6 @@ export default function EditorContainer({ blog, user }: PropTypes) {
       }
     } catch (error) {
       showNotification({ message: error.message, color: "red", icon: <X />, title: "An error ocurred" });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -109,11 +108,32 @@ export default function EditorContainer({ blog, user }: PropTypes) {
     });
   };
 
+  const togglePublish = async () => {
+    try {
+      const res = await fetch("/api/publish-blog", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: blog.id, published: published ? false : true })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        showNotification({ message: json.message, title: "Success", color: "green" });
+        handler.toggle();
+      } else {
+        throw new Error("Failed to publish blog. Please try again.");
+      }
+    } catch (error) {
+      showNotification({ message: error.message, color: "red", title: "Error" });
+    }
+  };
+
   const imageURL = useMemo(() => {
     const [file] = files;
 
     return file ? URL.createObjectURL(file) : "";
   }, [files]);
+
+  const edited = blog.content !== content;
 
   return (
     <>
@@ -121,50 +141,45 @@ export default function EditorContainer({ blog, user }: PropTypes) {
         <Title order={1} mb={"xl"}>
           {blog.title}
         </Title>
-        <Tabs defaultValue="editor" style={{ width: "80%" }}>
-          <Tabs.List position="right">
+        <Tabs defaultValue="information" style={{ width: "80%" }}>
+          <Tabs.List position="apart">
+            <Tabs.Tab icon={<InfoCircle size={22} className={classes.icon} />} value={"information"}>
+              Information
+            </Tabs.Tab>
             <Tabs.Tab icon={<FilePencil size={22} className={classes.icon} />} value="editor">
               Editor
+            </Tabs.Tab>
+            <Tabs.Tab icon={<File size={22} className={classes.icon} />} disabled={buttonDisabled} value="blog-preview">
+              Blog Preview
             </Tabs.Tab>
             <Tabs.Tab
               disabled={previewDisabled}
               icon={<BrandHtml5 size={22} className={classes.icon} />}
               value="preview"
             >
-              Preview
+              Card Preview
+            </Tabs.Tab>
+            <Tabs.Tab disabled={buttonDisabled} icon={<Upload size={22} className={classes.icon} />} value={"publish"}>
+              Publish
             </Tabs.Tab>
           </Tabs.List>
-          <Tabs.Panel pt={"md"} value="editor">
-            <Stack style={{ position: "relative" }}>
-              <LoadingOverlay zIndex={250} visible={loading} />
-              <TextInput
-                onChange={handleChange}
-                name={"heading"}
-                value={form.heading}
-                required
-                label={"Heading"}
-                placeholder={"Random blog heading that looks interesting"}
-              />
-              <Textarea
-                onChange={handleChange}
-                value={form.description}
-                name={"description"}
-                required
-                label="Description"
-                placeholder="Random placeholder"
-              />
-              <SimpleGrid cols={2}>
-                <ImageUpload onDrop={setFile} />
-                <ImagePreview src={imageURL || thumbnail} />
-              </SimpleGrid>
-              <RichTextEditor value={content} onChange={setContent} />
-              <Button onClick={handleSubmit} disabled={buttonDisabled} color={"green"}>
-                Submit
-              </Button>
-            </Stack>
+          <Tabs.Panel value={"information"}>
+            <BlogInfo {...form} submit={submit} onChange={handleChange}>
+              <ImageUpload onDrop={setFile} />
+              <ImagePreview src={imageURL || thumbnail} />
+            </BlogInfo>
+          </Tabs.Panel>
+          <Tabs.Panel style={{ position: "relative" }} pt={"md"} value="editor">
+            <TextEditor isEdited={edited} published={published} id={blog.id} content={content} onChange={setContent} />
           </Tabs.Panel>
           <Tabs.Panel className={cx(classes.flex, classes.previewTab)} pt={"md"} value="preview">
             <PreviewCard user={user} created_at={blog.created_at} {...form} image={imageURL || thumbnail} />
+          </Tabs.Panel>
+          <Tabs.Panel value="blog-preview">
+            <BlogPreview {...form} content={content} thumbnail={imageURL || thumbnail} />
+          </Tabs.Panel>
+          <Tabs.Panel value="publish">
+            <Publish onPublish={togglePublish} {...form} published={published} thumbnail={imageURL || thumbnail} />
           </Tabs.Panel>
         </Tabs>
       </div>
