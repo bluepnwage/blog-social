@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Anchor, Avatar, Group, Image, Stack, Text, Title, Skeleton } from "@mantine/core";
+import colors from "@util/hashmap";
+import { Anchor, Avatar, Group, Image, Stack, Text, Title, Skeleton, Badge } from "@mantine/core";
 import { useStyles } from "./styles";
 import { Blog, User } from "@interfaces/supabase";
 import { formatDate } from "@util/formatDate";
@@ -16,6 +17,7 @@ export function FeaturedBlog({ blog, user: userData, onClose }: PropTypes) {
   const { user, userLoading } = useUser(blog.author_id, { fallbackData: userData });
   const { classes, cx } = useStyles();
 
+  const topic = blog.topic.slice(0, 1).toUpperCase() + blog.topic.slice(1);
   const date = new Date(blog.created_at);
   return (
     <div className={cx("container", classes.blogContainer)}>
@@ -29,6 +31,9 @@ export function FeaturedBlog({ blog, user: userData, onClose }: PropTypes) {
         />
       </figure>
       <div className={classes.descriptionContainer}>
+        <div>
+          <Badge color={colors.retrieve(blog.topic)}>{topic}</Badge>
+        </div>
         <Text weight={400} className={classes.dimmedText} component={"time"}>
           {formatDate(date)}
         </Text>

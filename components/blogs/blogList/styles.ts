@@ -36,5 +36,8 @@ export const useStyles = createStyles((theme) => ({
     justifyContent: "space-between",
     alignItems: "center",
     marginTop: theme.spacing.xl * 1.5
+  },
+  badgeContainer: {
+    marginBottom: theme.spacing.sm
   }
 }));

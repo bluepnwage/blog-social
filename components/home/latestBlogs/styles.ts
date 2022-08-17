@@ -27,5 +27,8 @@ export const useStyles = createStyles((theme) => ({
   descriptionContainer: {
     justifyContent: "space-between",
     flexGrow: 1
+  },
+  badgeContainer: {
+    marginBottom: theme.spacing.sm
   }
 }));

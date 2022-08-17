@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Anchor, Avatar, Card, Group, Image, Stack, Text, Title, Skeleton } from "@mantine/core";
+import colors from "@util/hashmap";
+import { Anchor, Avatar, Card, Group, Image, Stack, Text, Title, Skeleton, Badge } from "@mantine/core";
 import { useStyles } from "./styles";
 import { Suspense, lazy } from "react";
 import { Blog, User } from "@interfaces/supabase";
@@ -17,6 +18,7 @@ export function LatestBlog({ blog, user: userData }: PropTypes) {
   const { user, userLoading } = useUser(blog.author_id, { fallbackData: userData });
   const { classes, cx } = useStyles();
 
+  const topic = blog.topic.slice(0, 1).toUpperCase() + blog.topic.slice(1);
   const date = new Date(blog.created_at);
   return (
     <Suspense fallback={null}>
@@ -24,6 +26,9 @@ export function LatestBlog({ blog, user: userData }: PropTypes) {
         <Card.Section component={"figure"} className={classes.imageContainer}>
           <Image src={blog.thumbnail} width={"100%"} height={"100%"} imageProps={{ loading: "lazy" }} alt={""} />
         </Card.Section>
+        <div className={classes.badgeContainer}>
+          <Badge color={colors.retrieve(blog.topic)}>{topic}</Badge>
+        </div>
         <div className={cx(classes.flexColumn, classes.descriptionContainer)}>
           <div>
             <Text component="time" weight={400} className={classes.dimmedText}>

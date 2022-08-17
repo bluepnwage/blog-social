@@ -69,7 +69,7 @@ class HashMap {
       return nextNode;
     }
   }
-  retrieve(key: Topics) {
+  retrieve(key: Topics): MantineColor {
     const arrayIndex = this.hash(key);
     let current = this.map[arrayIndex].head;
     while (current) {
@@ -78,7 +78,7 @@ class HashMap {
       }
       current = current.next;
     }
-    return null;
+    return "dark";
   }
 }
 
