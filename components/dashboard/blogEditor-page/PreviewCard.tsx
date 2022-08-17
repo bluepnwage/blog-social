@@ -1,8 +1,10 @@
 import Link from "next/link";
-import { Card, Text, Title, Anchor, Image, Group, Avatar, Stack } from "@mantine/core";
+import colors from "@util/hashmap";
+import { Card, Text, Title, Anchor, Image, Group, Avatar, Stack, Badge } from "@mantine/core";
 import { useStyles } from "./styles";
 import { formatDate } from "@util/formatDate";
 import { User } from "@interfaces/supabase";
+import { Topics } from "@interfaces/topics";
 
 interface PropTypes {
   heading: string;
@@ -10,9 +12,10 @@ interface PropTypes {
   image: string;
   created_at: string;
   user: User;
+  topic: Topics;
 }
 
-export function PreviewCard({ description, heading, image, created_at, user }: PropTypes) {
+export function PreviewCard({ description, heading, image, created_at, user, topic }: PropTypes) {
   const { classes } = useStyles();
   const date = new Date(created_at);
   const infoFilled = user.first_name && user.last_name ? true : false;
@@ -28,6 +31,11 @@ export function PreviewCard({ description, heading, image, created_at, user }: P
             alt={""}
           />
         </Card.Section>
+        <div className={classes.badgeContainer}>
+          <Badge color={colors.retrieve(topic) || "dark"} variant={"light"}>
+            {topic}
+          </Badge>
+        </div>
         <Text component="time" weight={400} color={"dimmed"}>
           {formatDate(date)}
         </Text>

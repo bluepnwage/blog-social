@@ -1,3 +1,5 @@
+import { Topics } from "./topics";
+
 export interface Blog {
   id: number;
   created_at: string;
@@ -12,6 +14,7 @@ export interface Blog {
   slug: string;
   likes: number;
   read_time: number;
+  topic: Topics;
 }
 
 export interface User {

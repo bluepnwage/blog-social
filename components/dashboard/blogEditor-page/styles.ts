@@ -41,5 +41,8 @@ export const useStyles = createStyles((theme) => ({
   },
   successIcon: {
     color: checkTheme(theme, theme.colors.green[7], theme.colors.green[4])
+  },
+  badgeContainer: {
+    marginBottom: theme.spacing.sm
   }
 }));

@@ -1,5 +1,5 @@
 import { FormEvent, useState, useMemo } from "react";
-import { Title, Tabs } from "@mantine/core";
+import { Title, Tabs, SimpleGrid, Select, SelectItem } from "@mantine/core";
 import { FilePencil, BrandHtml5, Check, X, InfoCircle, File, Upload } from "tabler-icons-react";
 import { useStyles } from "./styles";
 import { ImageUpload } from "./ImageUpload";
@@ -13,6 +13,7 @@ import { showNotification } from "@mantine/notifications";
 import { CloudinaryResponse } from "@interfaces/cloudinary";
 import { BlogInfo } from "./BlogInfo";
 import { useDisclosure } from "@mantine/hooks";
+import { Topics } from "@interfaces/topics";
 
 interface Form {
   heading: string;
@@ -23,6 +24,16 @@ interface PropTypes {
   blog: Blog;
   user: User;
 }
+const topics = [
+  { value: "art", label: "Art" },
+  { value: "business", label: "Business" },
+  { value: "education", label: "Education" },
+  { value: "entertainment", label: "Entertainment" },
+  { value: "fashion", label: "Fashion" },
+  { value: "sports", label: "Sports" },
+  { value: "technology", label: "Technology" },
+  { value: "other", label: "Other" }
+];
 
 export default function EditorContainer({ blog, user }: PropTypes) {
   const [form, setForm] = useState<Form>({
@@ -33,6 +44,7 @@ export default function EditorContainer({ blog, user }: PropTypes) {
   const [files, setFile] = useState<File[]>([]);
   const [thumbnail, setThubmnail] = useState(blog.thumbnail);
   const [published, handler] = useDisclosure(blog.published);
+  const [selectedTopic, setTopic] = useState(blog.topic);
   const { classes, cx } = useStyles();
 
   const previewDisabled = !form.heading || !form.description || (files.length === 0 && !thumbnail);
@@ -56,7 +68,14 @@ export default function EditorContainer({ blog, user }: PropTypes) {
         const res = await fetch("/api/create-blog", {
           method: "PUT",
           headers: { "Content-Type": "application" },
-          body: JSON.stringify({ ...form, id: blog.id, content, thumbnail: secure_url, published })
+          body: JSON.stringify({
+            ...form,
+            id: blog.id,
+            content,
+            thumbnail: secure_url,
+            published,
+            topic: selectedTopic
+          })
         });
 
         if (res.ok) {
@@ -69,7 +88,7 @@ export default function EditorContainer({ blog, user }: PropTypes) {
         const res = await fetch("/api/create-blog", {
           method: "PUT",
           headers: { "Content-Type": "application" },
-          body: JSON.stringify({ ...form, id: blog.id, content, published })
+          body: JSON.stringify({ ...form, id: blog.id, content, published, topic: selectedTopic })
         });
 
         if (res.ok) {
@@ -163,8 +182,16 @@ export default function EditorContainer({ blog, user }: PropTypes) {
           </Tabs.List>
           <Tabs.Panel value={"information"}>
             <BlogInfo {...form} submit={submit} onChange={handleChange}>
-              <ImageUpload onDrop={setFile} />
-              <ImagePreview src={imageURL || thumbnail} />
+              <Select
+                value={selectedTopic}
+                data={topics}
+                onChange={(value: Topics) => setTopic(value)}
+                label={"Select a topic"}
+              />
+              <SimpleGrid cols={2}>
+                <ImageUpload onDrop={setFile} />
+                <ImagePreview src={imageURL || thumbnail} />
+              </SimpleGrid>
             </BlogInfo>
           </Tabs.Panel>
           <Tabs.Panel style={{ position: "relative" }} pt={"md"} value="editor">
@@ -177,7 +204,13 @@ export default function EditorContainer({ blog, user }: PropTypes) {
             />
           </Tabs.Panel>
           <Tabs.Panel className={cx(classes.flex, classes.previewTab)} pt={"md"} value="preview">
-            <PreviewCard user={user} created_at={blog.created_at} {...form} image={imageURL || thumbnail} />
+            <PreviewCard
+              topic={selectedTopic}
+              user={user}
+              created_at={blog.created_at}
+              {...form}
+              image={imageURL || thumbnail}
+            />
           </Tabs.Panel>
           <Tabs.Panel value="blog-preview">
             <BlogPreview {...form} content={content} thumbnail={imageURL || thumbnail} />

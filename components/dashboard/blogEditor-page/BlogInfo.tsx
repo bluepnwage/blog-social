@@ -1,4 +1,4 @@
-import { Stack, TextInput, Textarea, SimpleGrid, Button } from "@mantine/core";
+import { Stack, TextInput, Textarea,  Button,  } from "@mantine/core";
 import { FormEvent, ReactNode, useState } from "react";
 
 interface PropTypes {
@@ -40,7 +40,7 @@ export function BlogInfo({ description, heading, children, onChange, submit }: P
           label="Description"
           placeholder="Random placeholder"
         />
-        <SimpleGrid cols={2}>{children}</SimpleGrid>
+        {children}
         <Button loading={loading} color={"green"} onClick={handleSubmit}>
           Submit
         </Button>
