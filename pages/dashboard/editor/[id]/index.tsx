@@ -42,7 +42,6 @@ export const getServerSideProps = withPageAuth({
     }
 
     const { profiles, ...blog } = body;
-    console.log(blog);
     return {
       props: {
         blog: blog,

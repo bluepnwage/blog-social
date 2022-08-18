@@ -1,10 +1,12 @@
 import RichTextEditor from "@mantine/rte";
-import { useDebouncedValue } from "@mantine/hooks";
+import { useDebouncedValue, useDisclosure } from "@mantine/hooks";
 import { showNotification } from "@mantine/notifications";
-import { Dispatch, SetStateAction, useState, useEffect } from "react";
+import { Dispatch, SetStateAction, useState, useEffect, lazy, Suspense } from "react";
 import { Check } from "tabler-icons-react";
 import { Group, Text, Loader, Button } from "@mantine/core";
 import { useStyles } from "./styles";
+
+const MarkdownEditor = lazy(() => import("./MarkdownEditor"));
 
 interface PropTypes {
   content: string;
@@ -16,9 +18,10 @@ interface PropTypes {
 
 export function TextEditor({ content, onChange, id, published, originalContent }: PropTypes) {
   const [autosave, setSaving] = useState({ loading: false, success: false });
-  const [loading, setLoading] = useState(false);
+  const [loading, loadHandler] = useDisclosure(false);
   const [firstMount, setFirstMount] = useState(true);
   const [debounced] = useDebouncedValue(content, 2000);
+  const [markdown, markdownHandler] = useDisclosure(false);
   const { classes, cx } = useStyles();
 
   useEffect(() => {
@@ -56,7 +59,7 @@ export function TextEditor({ content, onChange, id, published, originalContent }
   };
 
   const handleClick = async () => {
-    setLoading(true);
+    loadHandler.open();
     try {
       const res = await fetch("/api/publish-blog", {
         method: "POST",
@@ -72,7 +75,7 @@ export function TextEditor({ content, onChange, id, published, originalContent }
     } catch (error) {
       showNotification({ color: "red", message: error.message, title: "Error" });
     } finally {
-      setLoading(false);
+      loadHandler.close();
     }
   };
 
@@ -80,7 +83,19 @@ export function TextEditor({ content, onChange, id, published, originalContent }
 
   return (
     <>
-      <RichTextEditor stickyOffset={70} value={content} onChange={onChange} />
+      <Button variant="light" mb={"md"} onClick={markdownHandler.toggle}>
+        {markdown ? "Use Rich text editor" : "Use markdown"}
+      </Button>
+      {!markdown && <RichTextEditor stickyOffset={70} value={content} onChange={onChange} />}
+      <Suspense
+        fallback={
+          <Group position="center">
+            <Loader size={"xl"} />
+          </Group>
+        }
+      >
+        {markdown && <MarkdownEditor onChange={onChange} content={content} />}
+      </Suspense>
       <div className={cx(classes.loader, classes.flex)}>
         {autosave.loading && <Loader />}
         {autosave.success && (
