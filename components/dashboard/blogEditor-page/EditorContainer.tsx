@@ -1,5 +1,5 @@
 import { FormEvent, useState, useMemo } from "react";
-import { Title, Tabs, SimpleGrid, Select, SelectItem } from "@mantine/core";
+import { Title, Tabs, SimpleGrid, Select } from "@mantine/core";
 import { FilePencil, BrandHtml5, Check, X, InfoCircle, File, Upload } from "tabler-icons-react";
 import { useStyles } from "./styles";
 import { ImageUpload } from "./ImageUpload";
@@ -13,7 +13,7 @@ import { showNotification } from "@mantine/notifications";
 import { CloudinaryResponse } from "@interfaces/cloudinary";
 import { BlogInfo } from "./BlogInfo";
 import { useDisclosure } from "@mantine/hooks";
-import { Topics } from "@interfaces/topics";
+import { Topics } from "@interfaces/blogs";
 
 interface Form {
   heading: string;

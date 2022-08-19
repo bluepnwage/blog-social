@@ -1,4 +1,4 @@
-import { Topics } from "./topics";
+import { Topics } from "./blogs";
 
 export interface Blog {
   id: number;

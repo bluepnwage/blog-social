@@ -4,7 +4,7 @@ import { Card, Text, Title, Anchor, Image, Group, Avatar, Stack, Badge } from "@
 import { useStyles } from "./styles";
 import { formatDate } from "@util/formatDate";
 import { User } from "@interfaces/supabase";
-import { Topics } from "@interfaces/topics";
+import { Topics } from "@interfaces/blogs";
 
 interface PropTypes {
   heading: string;

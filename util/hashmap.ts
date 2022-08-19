@@ -1,5 +1,5 @@
 import { MantineColor } from "@mantine/core";
-import { Topics, Data } from "@interfaces/topics";
+import { Topics, Data } from "@interfaces/blogs";
 
 class Nodes {
   data: Data;

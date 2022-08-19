@@ -1,58 +1,58 @@
-import { SimpleGrid } from "@mantine/core";
+import { SimpleGrid, Text, Title } from "@mantine/core";
 import { useStyles } from "./styles";
 import { Blog } from "./Blog";
 import { BlogJoin } from "@interfaces/supabase";
 import { Filters } from "./Filters";
 import { useState } from "react";
+import { Topics, FilterTypes } from "@interfaces/blogs";
+import { sortBlogs } from "@util/sortBlogs";
 
 interface PropTypes {
   blogs: BlogJoin[];
 }
 
-type FilterTypes = "popular" | "recent" | "least popular";
-
 export function BlogList({ blogs }: PropTypes) {
   const { classes, cx, theme } = useStyles();
+  const [chip, setChip] = useState<Topics>("");
+  const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterTypes>("popular");
 
-  const sortedBlogs = sorter(blogs, filter);
+  const sortedBlogs = sortBlogs(blogs, chip, filter, search);
+
+  const searchProps = {
+    value: search,
+    change(value: string) {
+      setSearch(value);
+    }
+  };
+
+  const categoryProps = {
+    chip,
+    change: setChip
+  };
+
+  const filterProps = {
+    value: filter,
+    change: setFilter
+  };
+
   return (
     <>
-      <Filters filter={filter} onChange={(value: FilterTypes) => setFilter(value)} />
-      <SimpleGrid
-        breakpoints={[{ maxWidth: "sm", cols: 1, spacing: theme.spacing.xl * 1.5 }]}
-        cols={3}
-        className={cx("container", classes.grid)}
-      >
-        {sortedBlogs.map(({ profiles: user, ...blog }, index) => (
-          <Blog blog={blog} key={index} user={user} />
-        ))}
-      </SimpleGrid>
+      <Title order={1} mt={"xl"}>
+        Browse our blogs
+      </Title>
+      <div className={classes.container}>
+        <SimpleGrid
+          breakpoints={[{ maxWidth: "sm", cols: 1, spacing: theme.spacing.xl * 1.5 }]}
+          cols={3}
+          className={cx(classes.grid)}
+        >
+          <Filters search={searchProps} category={categoryProps} filter={filterProps} />
+          {sortedBlogs.length > 0 &&
+            sortedBlogs.map(({ profiles: user, ...blog }, index) => <Blog blog={blog} key={index} user={user} />)}
+          {sortedBlogs.length === 0 && <Text>No blogs found!</Text>}
+        </SimpleGrid>
+      </div>
     </>
   );
-}
-
-function sorter(blogs: BlogJoin[], filter: FilterTypes) {
-  switch (filter) {
-    case "recent": {
-      const filtered = blogs.sort((a, b) => {
-        return Date.parse(b.created_at) - Date.parse(a.created_at);
-      });
-      return filtered;
-    }
-    case "popular": {
-      const filtered = blogs.sort((a, b) => {
-        return b.likes - a.likes;
-      });
-      return filtered;
-    }
-    case "least popular": {
-      const filtered = blogs.sort((a, b) => {
-        return a.likes - b.likes;
-      });
-      return filtered;
-    }
-    default:
-      return blogs;
-  }
 }

@@ -16,7 +16,8 @@ export const useStyles = createStyles((theme) => ({
   grid: {
     rowGap: theme.spacing.xl * 2.5,
     columnGap: theme.spacing.xl,
-    marginBottom: theme.spacing.xl * 2.5
+    marginBottom: theme.spacing.xl * 2.5,
+    flex: "1 1 75%"
   },
   dimmedText: {
     color: checkTheme(theme, theme.colors.gray[7], theme.colors.dark[2])
@@ -33,11 +34,17 @@ export const useStyles = createStyles((theme) => ({
     display: "flex"
   },
   filterContainer: {
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: theme.spacing.xl * 1.5
+    flex: "1 1 25%",
+    width: "80%"
   },
   badgeContainer: {
     marginBottom: theme.spacing.sm
+  },
+  container: {
+    width: "90%",
+    marginTop: theme.spacing.xl * 1.5
+  },
+  pointer: {
+    cursor: "pointer"
   }
 }));
