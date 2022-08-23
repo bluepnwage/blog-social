@@ -1,4 +1,4 @@
-import { Blog as BlogProps, BlogJoin, User } from "@interfaces/supabase";
+import { Blog as BlogProps, BlogJoin, CommentsJoin, User } from "@interfaces/supabase";
 import { supabaseClient } from "@supabase/auth-helpers-nextjs";
 import { BlogAuthor, BlogImage, BlogTitle, BlogArticle } from "@components/blog-page";
 import { GetStaticPaths, GetStaticProps } from "next";
@@ -8,14 +8,16 @@ import Head from "next/head";
 
 const BlogStats = lazy(() => import("@components/blog-page/blog/BlogStats"));
 const RelatedBlogs = lazy(() => import("@components/blog-page/relatedBlogs/RelatedList"));
+const CommentsList = lazy(() => import("@components/blog-page/comments/CommentsList"));
 
 interface PropTypes {
   blog: BlogProps;
   user: User;
   relatedBlogs: BlogProps[];
+  comments: CommentsJoin[];
 }
 
-export default function Blog({ blog, user, relatedBlogs }: PropTypes) {
+export default function Blog({ blog, user, relatedBlogs, comments }: PropTypes) {
   const [mount, setMount] = useState(true);
   const router = useRouter();
   useEffect(() => {
@@ -38,8 +40,8 @@ export default function Blog({ blog, user, relatedBlogs }: PropTypes) {
         <meta name="description" content={blog.description} />
       </Head>
       <section className={"section-container"}>
-        <Suspense fallback={null}>
-          {mount && (
+        <Suspense
+          fallback={
             <BlogAuthor
               readTime={blog.read_time}
               slug={blog.slug}
@@ -47,8 +49,9 @@ export default function Blog({ blog, user, relatedBlogs }: PropTypes) {
               user={user}
               uploadDate={blog.created_at}
             />
-          )}
-          {!mount && (
+          }
+        >
+          {mount && (
             <BlogAuthor
               readTime={blog.read_time}
               slug={blog.slug}
@@ -65,6 +68,9 @@ export default function Blog({ blog, user, relatedBlogs }: PropTypes) {
           <BlogStats lastUpdate={blog.updated_at} slug={blog.slug} likes={blog.likes} />
         </Suspense>
       </section>
+      <Suspense fallback={null}>
+        <CommentsList blogID={blog.id} comments={comments} />
+      </Suspense>
       <Suspense fallback={null}>
         <RelatedBlogs blogs={relatedBlogs} />
       </Suspense>
@@ -92,6 +98,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     .eq("id", params.slug as string)
     .single();
 
+  const { data: comments } = await supabaseClient
+    .from<CommentsJoin>("comments")
+    .select("*, profiles(*)")
+    .eq("blog_id", params.slug as string);
+
   const { profiles: user, ...blog } = data;
   const { data: relatedBlogs } = await supabaseClient
     .from<BlogProps>("blogs")
@@ -104,7 +115,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     props: {
       blog,
       user,
-      relatedBlogs
+      relatedBlogs,
+      comments
     }
   };
 };

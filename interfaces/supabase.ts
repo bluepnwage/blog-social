@@ -37,3 +37,15 @@ export interface User {
 export interface BlogJoin extends Blog {
   profiles: User;
 }
+
+export interface Comment {
+  id: number;
+  content: string;
+  user_id: string;
+  blog_id: number;
+  created_at: string;
+}
+
+export interface CommentsJoin extends Comment {
+  profiles: User;
+}
