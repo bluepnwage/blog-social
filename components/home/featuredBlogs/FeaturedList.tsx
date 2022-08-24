@@ -3,7 +3,6 @@ import { useRef, memo } from "react";
 import { useStyles } from "./styles";
 import { FeaturedBlog } from "./FeaturedBlog";
 import { BlogJoin } from "@interfaces/supabase";
-import { useMediaQuery } from "@mantine/hooks";
 import { Carousel } from "@mantine/carousel";
 import AutoPlay from "embla-carousel-autoplay";
 

@@ -32,7 +32,7 @@ export function FeaturedBlog({ blog, user: userData, onClose }: PropTypes) {
       </figure>
       <div className={classes.descriptionContainer}>
         <div>
-          <Badge color={colors.retrieve(blog.topic)}>{topic}</Badge>
+          <Badge color={colors.get(blog.topic) || "dark"}>{topic}</Badge>
         </div>
         <Text weight={400} className={classes.dimmedText} component={"time"}>
           {formatDate(date)}

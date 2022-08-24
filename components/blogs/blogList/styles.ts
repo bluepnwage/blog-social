@@ -35,7 +35,10 @@ export const useStyles = createStyles((theme) => ({
   },
   filterContainer: {
     flex: "1 1 25%",
-    width: "80%"
+    width: "80%",
+    [theme.fn.smallerThan("sm")]: {
+      width: "100%"
+    }
   },
   badgeContainer: {
     marginBottom: theme.spacing.sm

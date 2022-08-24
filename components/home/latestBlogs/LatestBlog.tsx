@@ -27,7 +27,7 @@ export function LatestBlog({ blog, user: userData }: PropTypes) {
           <Image src={blog.thumbnail} width={"100%"} height={"100%"} imageProps={{ loading: "lazy" }} alt={""} />
         </Card.Section>
         <div className={classes.badgeContainer}>
-          <Badge color={colors.retrieve(blog.topic)}>{topic}</Badge>
+          <Badge color={colors.get(blog.topic) || "dark"}>{topic}</Badge>
         </div>
         <div className={cx(classes.flexColumn, classes.descriptionContainer)}>
           <div>

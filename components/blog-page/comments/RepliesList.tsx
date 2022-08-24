@@ -51,8 +51,6 @@ export default function RepliesList({ replyIDs, commentID, canReply, blogID, mut
     }
   };
 
-  console.log(replies);
-
   return (
     <Stack spacing={"xl"}>
       {canReply && (
