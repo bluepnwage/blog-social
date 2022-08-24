@@ -17,5 +17,8 @@ export const useStyles = createStyles((theme) => ({
   },
   dimmedText: {
     color: checkTheme(theme, theme.colors.gray[7], theme.colors.dark[2])
+  },
+  commentContainer: {
+    alignItems: "flex-start"
   }
 }));

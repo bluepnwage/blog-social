@@ -40,8 +40,8 @@ export default function Blog({ blog, user, relatedBlogs, comments }: PropTypes) 
         <meta name="description" content={blog.description} />
       </Head>
       <section className={"section-container"}>
-        <Suspense
-          fallback={
+        <Suspense fallback={null}>
+          {mount && (
             <BlogAuthor
               readTime={blog.read_time}
               slug={blog.slug}
@@ -49,9 +49,8 @@ export default function Blog({ blog, user, relatedBlogs, comments }: PropTypes) 
               user={user}
               uploadDate={blog.created_at}
             />
-          }
-        >
-          {mount && (
+          )}
+          {!mount && (
             <BlogAuthor
               readTime={blog.read_time}
               slug={blog.slug}

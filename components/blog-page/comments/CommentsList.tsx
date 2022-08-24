@@ -1,7 +1,7 @@
 import { Comment } from "./Comment";
 import { CreateComment } from "./CreateComment";
 import { useStyles } from "./styles";
-import { Avatar, Group, Stack } from "@mantine/core";
+import { Avatar, Group, Stack, Text } from "@mantine/core";
 import { useUser as useAuth } from "@supabase/auth-helpers-react";
 import { CommentsJoin } from "@interfaces/supabase";
 import { useUser } from "@hooks/useUser";
@@ -16,7 +16,11 @@ interface PropTypes {
 
 const fetcher = async (...args: string[]) => {
   const [, id] = args;
-  const { data } = await supabaseClient.from<CommentsJoin>("comments").select("*, profiles(*)").eq("blog_id", id);
+  const { data } = await supabaseClient
+    .from<CommentsJoin>("comments")
+    .select("*, profiles(*)")
+    .eq("blog_id", id)
+    .eq("is_reply", false);
   return data;
 };
 
@@ -33,7 +37,7 @@ export default function CommentsList({ comments: commentsData, blogID }: PropTyp
     <>
       <section className={"section-container"}>
         <div className={classes.container}>
-          <p>{comments.length} Comments</p>
+          <Text component="strong">{comments.length} Comments</Text>
           {auth?.id && (
             <Group mt={"xl"} align={"flex-start"}>
               <Avatar imageProps={{ loading: "lazy" }} src={user?.avatar_url} alt={""} radius={"xl"} />
@@ -45,7 +49,15 @@ export default function CommentsList({ comments: commentsData, blogID }: PropTyp
               const { profiles, ...comment } = commentInfo;
               const deletePerms = user?.id === profiles.id;
               return (
-                <Comment mutate={mutate} deletePerms={deletePerms} key={comment.id} comment={comment} user={profiles} />
+                <Comment
+                  blogID={blogID}
+                  canReply={auth?.id ? auth.id : false}
+                  mutate={mutate}
+                  deletePerms={deletePerms}
+                  key={comment.id}
+                  comment={comment}
+                  user={profiles}
+                />
               );
             })}
           </Stack>

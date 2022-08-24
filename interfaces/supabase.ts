@@ -44,6 +44,8 @@ export interface Comment {
   user_id: string;
   blog_id: number;
   created_at: string;
+  is_reply: boolean;
+  replies: number[];
 }
 
 export interface CommentsJoin extends Comment {
