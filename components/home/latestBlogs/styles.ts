@@ -10,8 +10,13 @@ export const useStyles = createStyles((theme) => ({
     paddingBottom: theme.spacing.xl * 2.5
   },
   card: {
-    boxShadow: checkTheme(theme, theme.shadows.md, ""),
-    justifyContent: "stretch"
+    transition: "all 250ms ease-out",
+    justifyContent: "stretch",
+    position: "relative",
+    "&:hover": {
+      boxShadow: `7px 7px 0px ${checkTheme(theme, theme.colors.primaryColor[7], theme.colors.primaryColor[3])}`,
+      transform: `translate(-7px, -7px)`
+    }
   },
   grid: {
     rowGap: theme.spacing.xl * 2.5,
@@ -29,6 +34,14 @@ export const useStyles = createStyles((theme) => ({
     flexGrow: 1
   },
   badgeContainer: {
-    marginBottom: theme.spacing.sm
+    marginBottom: theme.spacing.sm,
+    justifyContent: "space-between",
+    display: "flex"
+  },
+  title: {
+    color: checkTheme(theme, theme.colors.dark[8], theme.colors.dark[1]),
+    "&:hover": {
+      textDecoration: "underline"
+    }
   }
 }));

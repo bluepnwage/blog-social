@@ -3,9 +3,10 @@ import { useStyles } from "./styles";
 import { Blog } from "./Blog";
 import { BlogJoin } from "@interfaces/supabase";
 import { Filters } from "./Filters";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Topics, FilterTypes } from "@interfaces/blogs";
 import { sortBlogs } from "@util/sortBlogs";
+import { useRouter } from "next/router";
 
 interface PropTypes {
   blogs: BlogJoin[];
@@ -16,6 +17,14 @@ export function BlogList({ blogs }: PropTypes) {
   const [chip, setChip] = useState<Topics>("");
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState<FilterTypes>("popular");
+  const router = useRouter();
+
+  useEffect(() => {
+    const query = router.query;
+    if ("topic" in query) {
+      setChip(query.topic as Topics);
+    }
+  }, []);
 
   const sortedBlogs = sortBlogs(blogs, chip, filter, search);
 

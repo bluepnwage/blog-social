@@ -3,20 +3,20 @@ import { checkTheme } from "util/theme";
 
 export const useStyles = createStyles((theme) => ({
   heroContainer: {
-    height: "calc(100vh - 70px)",
-    color: theme.white,
+    height: "calc(80vh )",
     position: "relative",
     justifyContent: "center",
-    backgroundColor: theme.colors.blue[9],
+    backgroundColor: theme.other.mainBG,
+    color: theme.colors.dark[7],
     marginBottom: theme.spacing.xl
   },
   container: {
     display: "flex",
     justifyContent: "space-between",
-    gap: theme.spacing.sm
+    gap: theme.spacing.sm,
+    alignItems: "center"
   },
   imageContainer: {
-    aspectRatio: "16 / 9",
     flex: "1 1 45%",
     [theme.fn.smallerThan("md")]: {
       display: "none"
@@ -26,7 +26,11 @@ export const useStyles = createStyles((theme) => ({
     flex: "1 1 45%"
   },
   shapeFill: {
-    fill: checkTheme(theme, theme.colors.gray[0], theme.colors.dark[7]),
+    fill: checkTheme(theme, theme.colors.gray[0], theme.colors.dark[8]),
     transition: "all 250ms ease-out"
+  },
+  btn: {
+    backgroundColor: theme.other.primaryColor,
+    color: theme.white
   }
 }));

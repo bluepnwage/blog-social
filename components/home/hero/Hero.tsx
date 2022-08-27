@@ -12,19 +12,19 @@ export function Hero() {
             <Title mb={"md"} order={1}>
               Share your ideas with the world
             </Title>
-            <Text component="p" mb={"md"}>
+            <Text color={"dark"} component="p" mb={"md"}>
               Aliqua adipisicing Lorem aliqua voluptate nisi minim eiusmod irure aute. Amet aliquip non sunt esse est
               dolor anim. Aliqua consequat incididunt velit Lorem id dolore adipisicing voluptate minim officia ad
               incididunt. Officia qui esse eiusmod mollit ad aliqua amet Lorem labore aute nulla minim ut magna.
             </Text>
             <Link href={"/dashboard"} passHref>
-              <Button component="a" size="lg" radius={"xl"} variant="white">
+              <Button className={classes.btn} component="a" size="lg" radius={"xl"} >
                 Get Started
               </Button>
             </Link>
           </div>
           <figure className={classes.imageContainer}>
-            <Image src={"/team-blog.svg"} width={"100%"} height={"100%"} alt={"Team working on blog"} />
+            <Image style={{ transform: "scale(0.8)" }} src={"/article-amico.svg"} alt={"Team working on blog"} />
           </figure>
         </div>
         <div className="custom-shape-divider-bottom-1658446700">

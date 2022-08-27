@@ -24,27 +24,27 @@ export function LatestBlog({ blog, user: userData }: PropTypes) {
     <Suspense fallback={null}>
       <Card className={cx(classes.card, classes.flexColumn)}>
         <Card.Section component={"figure"} className={classes.imageContainer}>
-          <Image src={blog.thumbnail} width={"100%"} height={"100%"} imageProps={{ loading: "lazy" }} alt={""} />
+          <Link href={`/blogs/${blog.id}`}>
+            <a>
+              <Image src={blog.thumbnail} width={"100%"} height={"100%"} imageProps={{ loading: "lazy" }} alt={""} />
+            </a>
+          </Link>
         </Card.Section>
-        <div className={classes.badgeContainer}>
+        <div className={cx(classes.badgeContainer)}>
           <Badge color={colors.get(blog.topic) || "dark"}>{topic}</Badge>
+          <Text component="time" weight={400} className={classes.dimmedText}>
+            {formatDate(date)}
+          </Text>
         </div>
         <div className={cx(classes.flexColumn, classes.descriptionContainer)}>
-          <div>
-            <Text component="time" weight={400} className={classes.dimmedText}>
-              {formatDate(date)}
-            </Text>
-            <Title mb={"md"} order={3}>
-              {blog.heading}
-            </Title>
-          </div>
-
-          <Text mb={"md"} component="p">
-            {blog.description}
-          </Text>
-          <Link passHref href={`/blogs/${blog.id}`}>
-            <Anchor>Read article</Anchor>
+          <Link href={`/blogs/${blog.id}`}>
+            <a style={{ width: "fit-content", height: "fit-content" }}>
+              <Title className={classes.title} order={3}>
+                {blog.heading}
+              </Title>
+            </a>
           </Link>
+
           <Suspense fallback={null}>
             <ProfileModal user={user}>
               <Group mt={"md"}>
