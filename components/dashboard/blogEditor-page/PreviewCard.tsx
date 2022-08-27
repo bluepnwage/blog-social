@@ -32,7 +32,7 @@ export function PreviewCard({ description, heading, image, created_at, user, top
           />
         </Card.Section>
         <div className={classes.badgeContainer}>
-          <Badge color={colors.retrieve(topic)} variant={"light"}>
+          <Badge color={colors.get(topic) || "dark"} variant={"light"}>
             {topic}
           </Badge>
         </div>
